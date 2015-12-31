@@ -38,7 +38,7 @@ class FundingSource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
     categories = db.relationship('FundingCategory', secondary=categories, backref=db.backref('sources', lazy='dynamic'))
-    sponsor = db.relationship('FundingSponsor', secondary=sponsors, backref=db.backref('sources', lazy='dynamic'))
+    sponsor_id = db.Column(db.Integer, db.ForeignKey('funding_sponsor.id'))
     application = db.Column(db.Text)
     policies = db.Column(db.Text)
     grant_size = db.Column(db.String(250))
@@ -55,9 +55,13 @@ class FundingSource(db.Model):
     independent = db.Column(db.Boolean)
     years = db.relationship('FundingYear', secondary=years, backref=db.backref('sources', lazy='dynamic'))
 
+    def __repr__(self):
+        return '<Funding Source %r>' % self.name
+
 class FundingSponsor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True)
+    sources = db.relationship('FundingSource', backref='sponsor')
 
     def __repr__(self):
         return '<Funding Sponsor %r>' % self.name
