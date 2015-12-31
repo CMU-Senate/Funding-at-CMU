@@ -25,9 +25,11 @@ sponsors = db.Table('sponsors',
 class User(db.Model):
     id = db.Column(db.String(8), primary_key=True) #andrew_id
     additions = db.relationship('FundingSource', backref='added_by')
+    admin = db.Column(db.Boolean)
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id, admin=False):
+        self.id = id.lower()
+        self.admin = False
 
     def __repr__(self):
         return 'User <%r>' % self.id
