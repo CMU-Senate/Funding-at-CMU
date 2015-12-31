@@ -52,6 +52,7 @@ class FundingSource(db.Model):
     sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
     schools = db.relationship('FundingSchool', secondary=schools, backref=db.backref('sources', lazy='dynamic'))
     citizen = db.Column(db.Boolean)
+    independent = db.Column(db.Boolean)
     years = db.relationship('FundingYear', secondary=years, backref=db.backref('sources', lazy='dynamic'))
 
 class FundingSponsor(db.Model):
