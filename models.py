@@ -17,6 +17,11 @@ years = db.Table('years',
     db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
 )
 
+sponsors = db.Table('sponsors', 
+    db.Column('funding_sponsor_id', db.Integer, db.ForeignKey('funding_sponsor.id')),
+    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
+)
+
 class User(db.Model):
     id = db.Column(db.String(8), primary_key=True) #andrew_id
     additions = db.relationship('FundingSource', backref='added_by')
@@ -31,7 +36,7 @@ class FundingSource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
     categories = db.relationship('FundingCategory', secondary=categories, backref=db.backref('sources', lazy='dynamic'))
-    sponsor = db.Column(db.String(250))
+    sponsor = db.relationship('FundingSponsor', secondary=sponsors, backref=db.backref('sources', lazy='dynamic'))
     application = db.Column(db.Text)
     policies = db.Column(db.Text)
     grant_size = db.Column(db.String(250))
@@ -46,6 +51,13 @@ class FundingSource(db.Model):
     schools = db.relationship('FundingSchool', secondary=schools, backref=db.backref('sources', lazy='dynamic'))
     citizen = db.Column(db.Boolean)
     years = db.relationship('FundingYear', secondary=years, backref=db.backref('sources', lazy='dynamic'))
+
+class FundingSponsor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True)
+
+    def __repr__(self):
+        return '<Funding Sponsor %r>' % self.name
 
 class FundingCategory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
