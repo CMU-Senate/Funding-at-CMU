@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from config import db
-from models import User, FundingCategory, FundingSchool, FundingYear
+from models import *
 
 def main():
     db.create_all()
