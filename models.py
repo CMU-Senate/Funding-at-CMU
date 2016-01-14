@@ -12,12 +12,12 @@ schools = db.Table('schools',
     db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
 )
 
-years = db.Table('years', 
+years = db.Table('years',
     db.Column('funding_year_id', db.Integer, db.ForeignKey('funding_year.id')),
     db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
 )
 
-sponsors = db.Table('sponsors', 
+sponsors = db.Table('sponsors',
     db.Column('funding_sponsor_id', db.Integer, db.ForeignKey('funding_sponsor.id')),
     db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
 )

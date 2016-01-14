@@ -7,14 +7,14 @@ def main():
     db.create_all()
 
     fundingCategory = [
-        'Summer', 
-        'Research', 
-        'Study Abroad', 
-        'Internship', 
-        'Travel', 
-        'Academic Grant', 
+        'Summer',
+        'Research',
+        'Study Abroad',
+        'Internship',
+        'Travel',
+        'Academic Grant',
         'Crowdfunding', 
-        'Study/Research Grant', 
+        'Study/Research Grant',
         'Internship/Abroad'
     ]
     for fundingCategory in fundingCategory:
