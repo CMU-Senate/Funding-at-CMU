@@ -16,7 +16,7 @@
 
   <body>
     <nav class="red darken-4" role="navigation">
-      <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">funding.cmu.edu</a>
+      <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">funding.cmu.edu</a>
         <ul class="right hide-on-med-and-down">
           {% if user and user.admin %}<li><a href="/admin">Admin</a></li>{% endif %}
           {% if user %}<li><a href="/logout">Logout</a></li>{% endif %}
@@ -48,7 +48,8 @@
       </div>
     </footer>
 
-    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.0.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    {% block js %}{% endblock %}
   </body>
 </html>

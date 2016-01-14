@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}funding.cmu.edu | Browse{% endblock %}
+
+{% block main %}
+<div class="section no-pad-bot" id="index-banner">
+  <div class="container">
+    <h3 class="amber-text text-darken-2">Funding Sources</h3>
+
+    <div class="row">
+      <ul class="collapsible popout" data-collapsible="accordion">
+        {% for source in sources %}
+        <li>
+          <div class="collapsible-header">
+            {{source.name}}
+            {% if source.link %}
+              <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
+            {% endif %}
+
+            <div class="right">
+              {% for category in source.categories %}
+              <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="#">{{category.name}}</a>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="collapsible-body">
+            <p>
+              {{source.name}} - {{source.sponsor.name}} <br>
+              {{source.eligibility}} <br>
+              {{source.application}}
+            </p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="row">
+      <div class="left">
+        <ul class="pagination center">
+          <li {% if page == 0 %} class="disabled" {% else %} class="waves-effect" {% endif %}>
+            <a href="/browse/{{page - 1}}?page_size={{page_size}}">
+              <i class="material-icons">chevron_left</i>
+            </a>
+          </li>
+          {% for num_page in range(num_pages) %}
+          <li class="{% if num_page == page %} active red darken-4 {% else %} waves-effect {% endif %}">
+            <a href="/browse/{{num_page}}?page_size={{page_size}}">{{num_page + 1}}</a>
+          </li>
+          {% endfor %}
+          <li {% if page == num_pages - 1 %} class="disabled" {% else %} class="waves-effect" {% endif %}>
+            <a href="/browse/{{page + 1}}?page_size={{page_size}}">
+              <i class="material-icons">chevron_right</i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="input-field right amber-text text-darken-2">
+        <select id="pageSizeSelector">
+          <option value="10" {% if page_size == 10 %} selected {% endif %}>10</option>
+          <option value="15" {% if page_size == 15 %} selected {% endif %}>15</option>
+          <option value="25" {% if page_size == 25 %} selected {% endif %}>25</option>
+          <option value="50" {% if page_size == 50 %} selected {% endif %}>50</option>
+        </select>
+        <label>Page Size</label>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="section">
+    <div class="row">
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/browse.js') }}"></script>
+{% endblock %}
