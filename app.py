@@ -3,10 +3,11 @@
 from config import app
 from db_init import main
 from util import read_db
+from flask import render_template
 
 @app.route('/')
 def index():
-    return 'Hello World!'
+    return render_template('index.html')
 
 @app.route('/admin')
 def admin():
