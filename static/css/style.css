@@ -7,3 +7,21 @@ body {
 main {
   flex: 1 0 auto;
 }
+
+/* label color */
+
+ /* label focus color */
+ .input-field input[type=text]:focus + label {
+   color: #d50000;
+ }
+
+ /* label underline focus color */
+ .input-field input[type=text]:focus {
+   border-bottom: 1px solid #d50000;
+   box-shadow: 0 1px 0 0 #d50000;
+ }
+
+ /* icon prefix focus color */
+ .input-field .prefix.active {
+   color: #000;
+ }

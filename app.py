@@ -31,8 +31,9 @@ def browse(page=0):
 
 @app.route('/admin')
 def admin():
-    main()
-    return repr(read_db('https://docs.google.com/spreadsheets/d/1njc8zi2gVvmtCzISVtay2pQYzkNij73jbfGwUS8l7A0/pub?gid=0&single=true&output=csv'))
+    return render_template('admin.html')
+    #main()
+    #return repr(read_db('https://docs.google.com/spreadsheets/d/1njc8zi2gVvmtCzISVtay2pQYzkNij73jbfGwUS8l7A0/pub?gid=0&single=true&output=csv'))
 
 if __name__ == '__main__':
     app.run(debug=True) # app.run(host='0.0.0.0')

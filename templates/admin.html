@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}funding.cmu.edu | Admin{% endblock %}
+
+{% block main %}
+<div class="section no-pad-bot" id="index-banner">
+  <div class="container">
+    <h2 class="center amber-text text-darken-2" style="margin-bottom: 2rem;">Administration</h2>
+    <div class="row center section">
+      <form action="post" target="/admin/update">
+        <div class="input-field col s12 red-text text-darken-4">
+          <i class="material-icons prefix">insert_drive_file</i>
+          <input placeholder="https://docs.google.com/spreadsheets/d/1njc8zi2gVvmtCzISVtay2pQYzkNij73jbfGwUS8l7A0/pub?gid=0&single=true&output=csv" id="spreadsheet_url" type="text" required>
+          <label for="spreadsheet_url">Google Spreadsheet CSV URL</label>
+        </div>
+
+        <button class="btn waves-effect waves-light red darken-4" type="submit">Update Sources
+          <i class="material-icons right">update</i>
+        </button>
+      </form>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row center section">
+      <div class="col s6">
+        <button class="btn waves-effect waves-light red darken-4">Delete all Sources
+          <i class="material-icons right">delete</i>
+        </button>
+      </div>
+      <div class="col s6">
+        <button class="btn waves-effect waves-light red darken-4">Export all Sources
+          <i class="material-icons right">file_download</i>
+        </button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="row center section">
+      <div class="col s12">
+        <form action="post" target="/admin/import">
+          <div class="file-field input-field">
+            <div class="btn red darken-4">
+              <span>File</span>
+              <input type="file">
+            </div>
+            <div class="file-path-wrapper">
+              <input class="file-path" type="text" placeholder="Import a previously exported source dump">
+            </div>
+          </div>
+
+          <button class="btn waves-effect waves-light red darken-4" type="submit">Import Sources
+            <i class="material-icons right">import_export</i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
