@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 
 import math
-from config import app, db
+from config import app, db, version
 from db_init import main
 from util import read_db
 from flask import render_template, request, redirect, session, abort, flash
 from models import *
+
+@app.context_processor
+def inject_version():
+    return dict(version=version)
 
 @app.route('/')
 def index():

@@ -20,6 +20,9 @@
         <ul class="right hide-on-med-and-down">
           {% if user and user.admin %}<li><a href="/admin">Admin</a></li>{% endif %}
           {% if user %}<li><a href="/logout">Logout</a></li>{% endif %}
+          <a class="tooltipped" data-position="left" data-delay="50" data-tooltip="Licensed by Sushain Cherivirala under the GPLv2.">
+            {{ version }}
+          </a>
         </ul>
 
         <ul id="nav-mobile" class="side-nav">
