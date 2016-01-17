@@ -50,6 +50,15 @@
 
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-2.2.0.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/materialize.min.js') }}"></script>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <script type="text/javascript">
+          {% for message in messages %}
+            Materialize.toast('{{ message }}', 5000);
+          {% endfor %}
+        </script>
+      {% endif %}
+    {% endwith %}
     {% block js %}{% endblock %}
   </body>
 </html>

@@ -7,14 +7,14 @@
   <div class="container">
     <h2 class="center amber-text text-darken-2" style="margin-bottom: 2rem;">Administration</h2>
     <div class="row center section">
-      <form action="post" target="/admin/update">
+      <form method="post" action="/admin/add">
         <div class="input-field col s12 red-text text-darken-4">
           <i class="material-icons prefix">insert_drive_file</i>
-          <input placeholder="https://docs.google.com/spreadsheets/d/1njc8zi2gVvmtCzISVtay2pQYzkNij73jbfGwUS8l7A0/pub?gid=0&single=true&output=csv" id="spreadsheet_url" type="text" required>
+          <input placeholder="https://docs.google.com/spreadsheets/d/1njc8zi2gVvmtCzISVtay2pQYzkNij73jbfGwUS8l7A0/pub?gid=0&single=true&output=csv" id="spreadsheet_url" name="spreadsheet_url" type="text" required>
           <label for="spreadsheet_url">Google Spreadsheet CSV URL</label>
         </div>
 
-        <button class="btn waves-effect waves-light red darken-4" type="submit">Update Sources
+        <button class="btn waves-effect waves-light red darken-4" type="submit">Add Sources
           <i class="material-icons right">update</i>
         </button>
       </form>
@@ -24,9 +24,11 @@
 
     <div class="row center section">
       <div class="col s6">
-        <button class="btn waves-effect waves-light red darken-4">Delete all Sources
-          <i class="material-icons right">delete</i>
-        </button>
+        <a href="/admin/delete">
+          <button class="btn waves-effect waves-light red darken-4">Delete all Sources
+            <i class="material-icons right">delete</i>
+          </button>
+        </a>
       </div>
       <div class="col s6">
         <button class="btn waves-effect waves-light red darken-4">Export all Sources
@@ -56,6 +58,10 @@
         </form>
       </div>
     </div>
+
+    <h4 class="center amber-text text-darken-2">
+      {{ num_sources }} sources currently in database.
+    </h4>
   </div>
 </div>
 {% endblock %}

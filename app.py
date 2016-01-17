@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import math
-from config import app
+from config import app, db
 from db_init import main
 from util import read_db
-from flask import render_template, request, redirect, session, abort
+from flask import render_template, request, redirect, session, abort, flash
 from models import *
 
 @app.route('/')
@@ -33,10 +33,33 @@ def browse(page=0):
         abort(401)
 
 @app.route('/admin')
-def admin():
-    return render_template('admin.html')
+@app.route('/admin/<action>', methods=['GET', 'POST'])
+def admin(action=None):
+    if not action:
+        print(FundingSource.query.count())
+        return render_template('admin.html', **{
+            'num_sources': FundingSource.query.count() if FundingSource.query else 0
+        })
+    elif action == 'add' and request.method == 'POST':
+        spreadsheet_url = request.form.get('spreadsheet_url')
+        if not spreadsheet_url:
+            abort(400)
+        else:
+            sources = read_db(spreadsheet_url)
+            flash('Added %s funding sources.' % len(list(filter(bool, sources))))
+            return redirect('/admin')
+    elif action == 'delete':
+        flash('Deleted %s funding sources.' % FundingSource.query.delete())
+        db.session.commit()
+        return redirect('/admin')
+    elif action == 'export':
+        pass
+    elif action == 'import':
+        pass
+    else:
+        abort(400)
+
     #main()
-    #return repr(read_db('https://docs.google.com/spreadsheets/d/1njc8zi2gVvmtCzISVtay2pQYzkNij73jbfGwUS8l7A0/pub?gid=0&single=true&output=csv'))
 
 if __name__ == '__main__':
     app.run(debug=True) # app.run(host='0.0.0.0')

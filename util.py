@@ -51,7 +51,6 @@ def process_source(i, source):
 	if not added_by:
 		added_by = User(added_by_id, admin=True)
 		db.session.add(added_by)
-		db.session.commit()
 		logging.info('Added user %s with known Andrew ID' % added_by_id)
 
 	category_names = list(map(str.strip, source['Category'].split(',')))
@@ -70,7 +69,6 @@ def process_source(i, source):
 	if not sponsor:
 		sponsor = FundingSponsor(name=sponsor_name)
 		db.session.add(sponsor)
-		db.session.commit()
 		logging.info('Added sponsor %s' % sponsor_name)
 
 	sexes = []
@@ -102,7 +100,6 @@ def process_source(i, source):
 		logging.warning('Source #%d has no sex parsing codes, assuming either sex.' % i)
 		sex = 9
 
-	print(sponsor)
 	fundingSourceParams = {
 		'name': name,
 		'application': application,
@@ -123,6 +120,8 @@ def process_source(i, source):
 	}
 
 	source = FundingSource(**fundingSourceParams)
+	db.session.add(source)
+	db.session.commit()
 
 	return source
 
