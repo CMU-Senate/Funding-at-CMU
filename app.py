@@ -4,12 +4,12 @@ import math
 from config import app
 from db_init import main
 from util import read_db
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, abort
 from models import *
 
 @app.route('/')
 def index():
-    if 'user' in session or True:
+    if 'user' in session:
         return redirect('/browse')
     else:
         return render_template('index.html')
@@ -17,17 +17,20 @@ def index():
 @app.route('/browse')
 @app.route('/browse/<int:page>')
 def browse(page=0):
-    page_size = int(request.args.get('page_size', '10'))
-    count = FundingSource.query.count()
+    if 'user' in session or True:
+        page_size = int(request.args.get('page_size', '10'))
+        count = FundingSource.query.count()
 
-    context = {
-        'page': page,
-        'count': count,
-        'page_size': page_size,
-        'num_pages': math.ceil(count / page_size),
-        'sources': FundingSource.query.offset(page * page_size).limit(page_size).all(),
-    }
-    return render_template('browse.html', **context)
+        context = {
+            'page': page,
+            'count': count,
+            'page_size': page_size,
+            'num_pages': math.ceil(count / page_size),
+            'sources': FundingSource.query.offset(page * page_size).limit(page_size).all(),
+        }
+        return render_template('browse.html', **context)
+    else:
+        abort(401)
 
 @app.route('/admin')
 def admin():
