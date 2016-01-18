@@ -41,7 +41,7 @@ def commit_on_success(error=None):
 
 @app.route('/')
 def index():
-    if 'user' in session:
+    if g.user and g.user.is_authenticated:
         return redirect('/browse')
     else:
         return render_template('index.html')
@@ -50,48 +50,50 @@ def index():
 @app.route('/browse/<int:page>')
 @login_required
 def browse(page=0):
-    if 'user' in session or True:
-        page_size = int(request.args.get('page_size', '10'))
-        count = FundingSource.query.count()
+    page_size = int(request.args.get('page_size', '10'))
+    count = FundingSource.query.count()
 
-        context = {
-            'page': page,
-            'count': count,
-            'page_size': page_size,
-            'num_pages': math.ceil(count / page_size),
-            'sources': FundingSource.query.offset(page * page_size).limit(page_size).all(),
-        }
-        return render_template('browse.html', **context)
-    else:
-        abort(401)
+    context = {
+        'page': page,
+        'count': count,
+        'page_size': page_size,
+        'num_pages': math.ceil(count / page_size),
+        'sources': FundingSource.query.offset(page * page_size).limit(page_size).all(),
+    }
+    return render_template('browse.html', **context)
 
 @app.route('/admin')
 @app.route('/admin/<action>', methods=['GET', 'POST'])
 @login_required
 def admin(action=None):
-    if not action:
-        print(FundingSource.query.count())
-        return render_template('admin.html', **{
-            'num_sources': FundingSource.query.count() if FundingSource.query else 0
-        })
-    elif action == 'add' and request.method == 'POST':
-        spreadsheet_url = request.form.get('spreadsheet_url')
-        if not spreadsheet_url:
-            abort(400)
-        else:
-            sources = read_db(spreadsheet_url)
-            flash('Added %s funding sources.' % len(list(filter(bool, sources))))
+    if g.user and g.user.is_authenticated and g.user.admin:
+        if not action:
+            print(FundingSource.query.count())
+            return render_template('admin.html', **{
+                'num_sources': FundingSource.query.count() if FundingSource.query else 0
+            })
+        elif action == 'add' and request.method == 'POST':
+            spreadsheet_url = request.form.get('spreadsheet_url')
+            if not spreadsheet_url:
+                abort(400)
+            else:
+                sources = read_db(spreadsheet_url)
+                flash('Added %s funding sources.' % len(list(filter(bool, sources))))
+                return redirect('/admin')
+        elif action == 'delete':
+            flash('Deleted %s funding sources.' % FundingSource.query.delete())
+            db.session.commit()
             return redirect('/admin')
-    elif action == 'delete':
-        flash('Deleted %s funding sources.' % FundingSource.query.delete())
-        db.session.commit()
-        return redirect('/admin')
-    elif action == 'export':
-        pass
-    elif action == 'import':
-        pass
+        elif action == 'export':
+            pass
+        elif action == 'import':
+            pass
+        else:
+            abort(400)
+    elif g.user and g.user.is_authenticated:
+        abort(403)
     else:
-        abort(400)
+        abort(401)
 
 @app.route('/logout')
 def logout():
