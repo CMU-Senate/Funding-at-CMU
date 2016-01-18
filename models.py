@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from config import db
+from flask.ext.login import UserMixin
 
 categories = db.Table('categories',
     db.Column('funding_category_id', db.Integer, db.ForeignKey('funding_category.id')),
@@ -22,14 +23,16 @@ sponsors = db.Table('sponsors',
     db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
 )
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.String(8), primary_key=True) #andrew_id
     additions = db.relationship('FundingSource', backref='added_by')
     admin = db.Column(db.Boolean)
+    username = db.Column(db.String(100))
 
-    def __init__(self, id, admin=False):
-        self.id = id.lower()
-        self.admin = False
+    def __init__(self, *args, **kwargs):
+        self.id = kwargs.get('id', kwargs.get('username'))
+        self.username = self.id
+        self.admin = kwargs.get('admin', False)
 
     def __repr__(self):
         return 'User <%r>' % self.id

@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
-from config import db
+from config import db, engine, db_session
 from models import *
+from social.apps.flask_app.default import models
 
 def main():
+    models.PSABase.metadata.create_all(engine)
+    db_session.commit()
+
     db.create_all()
 
     fundingCategory = [
@@ -13,7 +17,7 @@ def main():
         'Internship',
         'Travel',
         'Academic Grant',
-        'Crowdfunding', 
+        'Crowdfunding',
         'Study/Research Grant',
         'Internship/Abroad'
     ]
