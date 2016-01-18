@@ -18,7 +18,7 @@
     <nav class="red darken-4" role="navigation">
       <div class="nav-wrapper container">
         <a id="logo-container" href="/" class="brand-logo">funding.cmu.edu</a>
-        <ul class="right hide-on-med-and-down" style="margin-right: -70px;">
+        <ul class="right hide-on-med-and-down" style="margin-right: -140px;">
           <li>
             <a class="tooltipped" data-position="left" data-delay="50" data-tooltip="Licensed by Sushain Cherivirala under the GPLv2." data-tooltip-id="1879c9f8-9f4b-2bca-389f-da5e97f71235">
               {{ version }}
@@ -29,11 +29,6 @@
         <ul class="right hide-on-med-and-down">
           {% if user and user.admin %}<li><a href="/admin">Admin</a></li>{% endif %}
           {% if user %}<li><a href="/logout">Logout ({{ user.id }})</a></li>{% endif %}
-          <li style="visibility: hidden;">
-            <a class="tooltipped" data-position="left" data-delay="50" data-tooltip="Licensed by Sushain Cherivirala under the GPLv2.">
-              {{ version }}
-            </a>
-          </li>
         </ul>
 
         <ul id="nav-mobile" class="side-nav">
