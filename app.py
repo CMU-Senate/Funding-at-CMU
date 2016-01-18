@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import math
-from config import app, db, version, login_manager, db_session
+from config import app, version, login_manager, db_session
 from util import read_db
 from flask import render_template, request, redirect, session, abort, flash, g
 from flask.ext import login
@@ -11,7 +11,7 @@ from models import *
 @login_manager.user_loader
 def load_user(id):
     try:
-        return User.query.get(id)
+        return db_session.query(User).get(id)
     except (TypeError, ValueError):
         pass
 
@@ -51,14 +51,14 @@ def index():
 @login_required
 def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
-    count = FundingSource.query.count()
+    count = db_session.query(FundingSource).count()
 
     context = {
         'page': page,
         'count': count,
         'page_size': page_size,
         'num_pages': math.ceil(count / page_size),
-        'sources': FundingSource.query.offset(page * page_size).limit(page_size).all(),
+        'sources': db_session.query(FundingSource).offset(page * page_size).limit(page_size).all(),
     }
     return render_template('browse.html', **context)
 
@@ -68,9 +68,8 @@ def browse(page=0):
 def admin(action=None):
     if g.user and g.user.is_authenticated and g.user.admin:
         if not action:
-            print(FundingSource.query.count())
             return render_template('admin.html', **{
-                'num_sources': FundingSource.query.count() if FundingSource.query else 0
+                'num_sources': db_session.query(FundingSource).count() if db_session.query(FundingSource) else 0
             })
         elif action == 'add' and request.method == 'POST':
             spreadsheet_url = request.form.get('spreadsheet_url')
@@ -81,8 +80,8 @@ def admin(action=None):
                 flash('Added %s funding sources.' % len(list(filter(bool, sources))))
                 return redirect('/admin')
         elif action == 'delete':
-            flash('Deleted %s funding sources.' % FundingSource.query.delete())
-            db.session.commit()
+            flash('Deleted %s funding sources.' % db_session.query(FundingSource).delete())
+            db_session.commit()
             return redirect('/admin')
         elif action == 'export':
             pass

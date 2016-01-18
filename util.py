@@ -3,7 +3,7 @@ import requests
 import datetime
 import logging
 from models import *
-from config import db
+from config import db_session
 
 andrewIDs = {
 	'Michael': 'mcgormle',
@@ -47,17 +47,18 @@ def process_source(i, source):
 		logging.error('Source #%d was added by %s with unknown Andrew ID, skipping.' % (i, added_by_name))
 		return
 	added_by_id = andrewIDs[source['Added by']]
-	added_by = User.query.filter_by(id=added_by_id).limit(1).first()
+	added_by = db_session.query(User).filter_by(id=added_by_id).limit(1).first()
 	if not added_by:
-		added_by = User(added_by_id, admin=True)
-		db.session.add(added_by)
+		added_by = User(id=added_by_id, admin=True)
+		db_session.add(added_by)
+		db_session.commit()
 		logging.info('Added user %s with known Andrew ID' % added_by_id)
 
 	category_names = list(map(str.strip, source['Category'].split(',')))
 	categories = []
 	if source['Category'].strip():
 		for category_name in category_names:
-			category = FundingCategory.query.filter_by(name=category_name).limit(1).first()
+			category = db_session.query(FundingCategory).filter_by(name=category_name).limit(1).first()
 			if not category:
 				logging.error('Source #%d has invalid category %s, skipping.' % (i, repr(category_name)))
 				return
@@ -65,10 +66,11 @@ def process_source(i, source):
 				categories.append(category)
 
 	sponsor_name = source['Sponsor']
-	sponsor = FundingSponsor.query.filter_by(name=sponsor_name).limit(1).first()
+	sponsor = db_session.query(FundingSponsor).filter_by(name=sponsor_name).limit(1).first()
 	if not sponsor:
 		sponsor = FundingSponsor(name=sponsor_name)
-		db.session.add(sponsor)
+		db_session.add(sponsor)
+		db_session.commit()
 		logging.info('Added sponsor %s' % sponsor_name)
 
 	sexes = []
@@ -120,16 +122,16 @@ def process_source(i, source):
 	}
 
 	source = FundingSource(**fundingSourceParams)
-	db.session.add(source)
-	db.session.commit()
+	db_session.add(source)
+	db_session.commit()
 
 	return source
 
 def read_db(csv_link):
 	for code, school in fundingSchools.items():
-		fundingSchools[code] = FundingSchool.query.get(school)
+		fundingSchools[code] = db_session.query(FundingSchool).get(school)
 	for code, year in fundingYears.items():
-		fundingYears[code] = FundingYear.query.filter_by(name=year).limit(1).first()
+		fundingYears[code] = db_session.query(FundingYear).filter_by(name=year).limit(1).first()
 
 	r = requests.get(csv_link)
 	if r.status_code == 200:
