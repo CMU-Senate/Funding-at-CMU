@@ -7,6 +7,12 @@ $(document).ready(function () {
     });
 
     $('#pageSizeSelector').change(function () {
-      window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val();
+      window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + $('input').serialize();
+    });
+
+    $('#searchText').keyup(function (event) {
+      if(event.keyCode == 13) {
+        window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + $('input').serialize();
+      }
     });
 });

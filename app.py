@@ -6,6 +6,7 @@ from util import read_db
 from flask import render_template, request, redirect, session, abort, flash, g
 from flask.ext import login
 from flask.ext.login import login_required, logout_user
+from sqlalchemy_utils import escape_like
 from models import *
 
 @login_manager.user_loader
@@ -51,14 +52,23 @@ def index():
 @login_required
 def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
-    count = db_session.query(FundingSource).count()
+    search_query = request.args.get('q', None)
+
+    q = db_session.query(FundingSource)
+    if search_query:
+        search_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
+        print(search_query)
+        q = q.filter(FundingSource.name.ilike('%{}%'.format(search_query)))
+
+    count = q.count()
 
     context = {
+        'q': request.args.get('q', None),
         'page': page,
         'count': count,
         'page_size': page_size,
         'num_pages': math.ceil(count / page_size),
-        'sources': db_session.query(FundingSource).offset(page * page_size).limit(page_size).all(),
+        'sources': q.offset(page * page_size).limit(page_size).all(),
     }
     return render_template('browse.html', **context)
 

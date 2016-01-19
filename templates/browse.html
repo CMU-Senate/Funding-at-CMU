@@ -11,8 +11,8 @@
       </div>
       <div class="input-field col s3">
         <i class="material-icons prefix">search</i>
-        <input id="icon_prefix" type="text" class="validate">
-        <label for="icon_prefix">Search</label>
+        <input id="searchText" type="text" name="q" {% if q %} value="{{q}}" {% endif %}>
+        <label for="searchText">Search</label>
       </div>
     </div>
 
@@ -95,10 +95,11 @@
               <i class="material-icons">chevron_right</i>
             </a>
           </li>
+          <span class="light">{{count}} results</span>
         </ul>
       </div>
       <div class="input-field right amber-text text-darken-2">
-        <select id="pageSizeSelector">
+        <select id="pageSizeSelector" name="page_size">
           <option value="10" {% if page_size == 10 %} selected {% endif %}>10</option>
           <option value="15" {% if page_size == 15 %} selected {% endif %}>15</option>
           <option value="25" {% if page_size == 25 %} selected {% endif %}>25</option>
@@ -106,14 +107,6 @@
         </select>
         <label>Page Size</label>
       </div>
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="section">
-    <div class="row">
-
     </div>
   </div>
 </div>
