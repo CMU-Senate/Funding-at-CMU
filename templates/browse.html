@@ -12,10 +12,10 @@
         {% for source in sources %}
         <li>
           <div class="collapsible-header">
+            <i class="material-icons red-text text-darken-4">
+              {% if source.independent %} person {% else %} people {% endif %}
+            </i>
             {{source.name}}
-            {% if source.link %}
-              <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
-            {% endif %}
 
             <div class="right">
               {% for category in source.categories %}
@@ -24,11 +24,45 @@
             </div>
           </div>
           <div class="collapsible-body">
-            <p>
-              {{source.name}} - {{source.sponsor.name}} <br>
-              {{source.eligibility}} <br>
-              {{source.application}}
-            </p>
+            <div style="margin: 0; padding: 2rem;">
+              <h4>
+                {{source.name}}
+                {% if source.link %}
+                  <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
+                {% endif %}
+              </h4>
+              <h5>{{source.sponsor.name}}</h5>
+              <div class="divider"></div>
+              <div class="section">
+                Due {{source.deadline.strftime('%B %d, %Y')}} <br>
+                {{source.grant_size}}
+                <br><br>
+                <div class="row">
+                  <div class="col s4">
+                    <h6><strong>Application</strong></h6> {{source.application}}
+                  </div>
+                  <div class="col s4">
+                    <h6><strong>Policies</strong></h6> {{source.policies}}
+                  </div>
+                  <div class="col s4">
+                    {% if source.other_info %}
+                      <h6><strong>Other Information</strong></h6> {{source.other_info}}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+              <div class="divider"></div>
+              <div class="section">
+                <h6><strong>Eligibility</strong></h6>
+                {{source.eligibility}} <br><br>
+
+                {% if source.sex == 0 %} Male <br> {% elif source.sex == 1 %} Female <br> {% endif %}
+                {% if source.citizen %} U.S. Citizen {% endif %}
+
+                {% for school in source.schools %} {{school.name}}{% if not loop.last %}, {% endif %} {% endfor %} <br><br>
+                {% for year in source.years %} {{year.name.title()}}{% if not loop.last %}, {% endif %} {% endfor %}
+              </div>
+            </div>
           </div>
         </li>
         {% endfor %}
