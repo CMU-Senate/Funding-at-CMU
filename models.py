@@ -5,22 +5,26 @@ from flask.ext.login import UserMixin
 
 categories = db.Table('categories',
     db.Column('funding_category_id', db.Integer, db.ForeignKey('funding_category.id')),
-    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
+    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id')),
+    db.UniqueConstraint('funding_category_id', 'funding_source_id')
 )
 
 schools = db.Table('schools',
     db.Column('funding_school_id', db.String(3), db.ForeignKey('funding_school.id')),
-    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
+    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id')),
+    db.UniqueConstraint('funding_school_id', 'funding_source_id')
 )
 
 years = db.Table('years',
     db.Column('funding_year_id', db.Integer, db.ForeignKey('funding_year.id')),
-    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
+    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id')),
+    db.UniqueConstraint('funding_year_id', 'funding_source_id')
 )
 
 sponsors = db.Table('sponsors',
     db.Column('funding_sponsor_id', db.Integer, db.ForeignKey('funding_sponsor.id')),
-    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id'))
+    db.Column('funding_source_id', db.Integer, db.ForeignKey('funding_source.id')),
+    db.UniqueConstraint('funding_sponsor_id', 'funding_source_id')
 )
 
 class User(db.Model, UserMixin):
@@ -40,7 +44,7 @@ class User(db.Model, UserMixin):
 class FundingSource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
-    categories = db.relationship('FundingCategory', secondary=categories, backref=db.backref('sources', lazy='dynamic'))
+    categories = db.relationship('FundingCategory', secondary=categories, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
     sponsor_id = db.Column(db.Integer, db.ForeignKey('funding_sponsor.id'))
     application = db.Column(db.Text)
     policies = db.Column(db.Text)
@@ -53,10 +57,10 @@ class FundingSource(db.Model):
 
     eligibility = db.Column(db.Text)
     sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
-    schools = db.relationship('FundingSchool', secondary=schools, backref=db.backref('sources', lazy='dynamic'))
+    schools = db.relationship('FundingSchool', secondary=schools, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
     citizen = db.Column(db.Boolean)
     independent = db.Column(db.Boolean)
-    years = db.relationship('FundingYear', secondary=years, backref=db.backref('sources', lazy='dynamic'))
+    years = db.relationship('FundingYear', secondary=years, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
 
     def __repr__(self):
         return '<Funding Source %r>' % self.name
