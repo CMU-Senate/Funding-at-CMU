@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 
 import math
-from config import app, version, login_manager, db_session
+import io
+from config import app, version, login_manager, db_session, engine
 from util import read_db
 from flask import render_template, request, redirect, session, abort, flash, g
 from flask.ext import login
 from flask.ext.login import login_required, logout_user
+from sqlalchemy import MetaData
 from sqlalchemy_utils import escape_like
+from sqlalchemy.ext.serializer import loads, dumps
+from flask import send_file
 from models import *
 
 @login_manager.user_loader
@@ -94,9 +98,15 @@ def admin(action=None):
             db_session.commit()
             return redirect('/admin')
         elif action == 'export':
-            pass
+            export = io.BytesIO(dumps(db_session.query(FundingSource).all()))
+            return send_file(export, attachment_filename='funding.db', as_attachment=True)
         elif action == 'import':
-            pass
+            import_file = request.files['import'].read()
+            sources = loads(import_file, MetaData(bind=engine), db_session)
+            for source in sources:
+                db_session.merge(source)
+            flash('Merged %s funding sources.' % len(sources))
+            return redirect('/admin')
         else:
             abort(400)
     elif g.user and g.user.is_authenticated:
