@@ -11,7 +11,7 @@
       </div>
       <div class="input-field col s3">
         <i class="material-icons prefix">search</i>
-        <input id="searchText" type="text" name="q" {% if q %} value="{{q}}" {% endif %}>
+        <input id="searchText" type="text" name="q" {% if q %} value="{{q}}" {% endif %} data-params="{{params}}">
         <label for="searchText">Search</label>
       </div>
     </div>
@@ -28,13 +28,15 @@
 
             <div class="right">
               {% for category in source.categories %}
-              <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="#">{{category.name}}</a>
+                <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="/browse?category={{category.id}}&page_size={{page_size}}">
+                  {{category.name}}
+                </a>
               {% endfor %}
             </div>
           </div>
           <div class="collapsible-body">
             <div style="margin: 0; padding: 2rem;">
-              <h4>
+              <h4 style="margin-top: 0;">
                 {{source.name}}
                 {% if source.link %}
                   <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
@@ -81,17 +83,17 @@
       <div class="left">
         <ul class="pagination center">
           <li {% if page == 0 %} class="disabled" {% else %} class="waves-effect" {% endif %}>
-            <a href="/browse/{{page - 1}}?page_size={{page_size}}">
+            <a href="/browse/{{page - 1}}?page_size={{page_size}}&{{params}}">
               <i class="material-icons">chevron_left</i>
             </a>
           </li>
           {% for num_page in range(num_pages) %}
           <li class="{% if num_page == page %} active red darken-4 {% else %} waves-effect {% endif %}">
-            <a href="/browse/{{num_page}}?page_size={{page_size}}">{{num_page + 1}}</a>
+            <a href="/browse/{{num_page}}?page_size={{page_size}}&{{params}}">{{num_page + 1}}</a>
           </li>
           {% endfor %}
           <li {% if page == num_pages - 1 %} class="disabled" {% else %} class="waves-effect" {% endif %}>
-            <a href="/browse/{{page + 1}}?page_size={{page_size}}">
+            <a href="/browse/{{page + 1}}?page_size={{page_size}}&{{params}}">
               <i class="material-icons">chevron_right</i>
             </a>
           </li>
@@ -99,7 +101,7 @@
         </ul>
       </div>
       <div class="input-field right amber-text text-darken-2">
-        <select id="pageSizeSelector" name="page_size">
+        <select id="pageSizeSelector" name="page_size" data-params="{{params}}">
           <option value="10" {% if page_size == 10 %} selected {% endif %}>10</option>
           <option value="15" {% if page_size == 15 %} selected {% endif %}>15</option>
           <option value="25" {% if page_size == 25 %} selected {% endif %}>25</option>

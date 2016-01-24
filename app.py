@@ -12,6 +12,7 @@ from sqlalchemy_utils import escape_like
 from sqlalchemy.ext.serializer import loads, dumps
 from flask import send_file
 from models import *
+from db_init import main
 
 @login_manager.user_loader
 def load_user(id):
@@ -57,17 +58,29 @@ def index():
 def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
     search_query = request.args.get('q', None)
+    category = request.args.get('category', None)
 
     q = db_session.query(FundingSource)
+
+    if category:
+        q = db_session.query(FundingCategory).get(int(category)).sources
+
     if search_query:
-        search_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
-        print(search_query)
-        q = q.filter(FundingSource.name.ilike('%{}%'.format(search_query)))
+        title_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
+        q = q.filter(FundingSource.name.ilike('%{}%'.format(title_query)))
 
     count = q.count()
 
+    params = {
+        'q': search_query,
+        'category': category
+    }
+    params = '&'.join(map(lambda x: '%s=%s' % x, filter(lambda x: x[1], params.items())))
+
     context = {
-        'q': request.args.get('q', None),
+        'q': search_query,
+        'category': category,
+        'params': params,
         'page': page,
         'count': count,
         'page_size': page_size,

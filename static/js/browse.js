@@ -7,12 +7,16 @@ $(document).ready(function () {
     });
 
     $('#pageSizeSelector').change(function () {
-      window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + $('input').serialize();
+      var params = $(this).data('params');
+      var inputs = $('input').serialize();
+      window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + inputs + '&' + params;
     });
 
     $('#searchText').keyup(function (event) {
       if(event.keyCode == 13) {
-        window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + $('input').serialize();
+        var params = $(this).data('params');
+        var inputs = $('input').serialize();
+        window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + inputs + '&' + params;
       }
     });
 });
