@@ -47,10 +47,31 @@ def commit_on_success(error=None):
 
 @app.route('/')
 def index():
-    if g.user and g.user.is_authenticated:
+    if request.args.get('logged_in', False) and g.user and g.user.is_authenticated and not g.user.profile_set:
+        return redirect('/profile')
+    elif g.user and g.user.is_authenticated:
         return redirect('/browse')
     else:
         return render_template('index.html')
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'GET':
+        context = {
+            'schools': db_session.query(FundingSchool).all(),
+            'years': db_session.query(FundingYear).all()
+        }
+        return render_template('profile.html', **context)
+    else:
+        gender = request.form.get('gender')
+        year = request.form.get('year')
+        school = request.form.get('school')
+        print(gender, year, school)
+
+        flash('Profile saved.')
+        return render_template('profile.html', **context)
+
 
 @app.route('/browse')
 @app.route('/browse/<int:page>')

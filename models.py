@@ -32,6 +32,11 @@ class User(db.Model, UserMixin):
     additions = db.relationship('FundingSource', backref='added_by')
     admin = db.Column(db.Boolean)
     username = db.Column(db.String(100))
+    profile_set = db.Column(db.Boolean, default=False)
+    sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
+    school = db.ForeignKey('FundingSchool')
+    citizen = db.Column(db.Boolean)
+    year = db.ForeignKey('FundingYear')
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id', kwargs.get('username'))
@@ -52,6 +57,7 @@ class FundingSource(db.Model):
     deadline = db.Column(db.DateTime)
     other_info = db.Column(db.Text)
     link = db.Column(db.String(2048))
+    independent = db.Column(db.Boolean)
 
     added_by_id = db.Column(db.String(8), db.ForeignKey('user.id'))
 
@@ -59,7 +65,6 @@ class FundingSource(db.Model):
     sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
     schools = db.relationship('FundingSchool', secondary=schools, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
     citizen = db.Column(db.Boolean)
-    independent = db.Column(db.Boolean)
     years = db.relationship('FundingYear', secondary=years, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
 
     def __repr__(self):
