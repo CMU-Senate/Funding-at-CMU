@@ -28,12 +28,18 @@
 
         <ul class="right hide-on-med-and-down">
           {% if user and user.admin %}<li><a href="/admin">Admin</a></li>{% endif %}
-          {% if user %}<li><a href="/logout">Logout ({{ user.id }})</a></li>{% endif %}
+          {% if user %}
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/logout">Logout ({{ user.id }})</a></li>
+          {% endif %}
         </ul>
 
         <ul id="nav-mobile" class="side-nav">
           {% if user and user.admin %}<li><a href="/admin">Admin</a></li>{% endif %}
-          {% if user %}<li><a href="/logout">Logout</a></li>{% endif %}
+          {% if user %}
+            <li><a href="/profile">Profile</a></li>
+            <li><a href="/logout">Logout</a></li>
+          {% endif %}
         </ul>
         <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
       </div>

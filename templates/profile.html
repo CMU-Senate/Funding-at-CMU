@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}funding.cmu.edu | Profile{% endblock %}
+
+{% block main %}
+<div class="section">
+  <div class="container">
+    <h1 class="amber-text text-darken-2">Your Profile</h1>
+    <h5 class="light">Help us tailor your search results</h5>
+
+    <br>
+
+    <form class="row" method="post" novalidate>
+      <div class="col s12" style="margin-bottom: 1em;">
+        <div class="col s4">
+          <p style="display: inline-block; margin-right: 1em;">
+            <input name="sex" type="radio" value="1" id="male" required {% if user and user.sex == 1 %} checked {% endif %}>
+            <label for="male">Male</label>
+          </p>
+          <p style="display: inline-block; margin-right: 1em;">
+            <input name="sex" type="radio" value="2" id="female" {% if user and user.sex == 2 %} checked {% endif %}>
+            <label for="female">Female</label>
+          </p>
+          <p style="display: inline-block; margin-right: 1em;">
+            <input name="sex" type="radio" value="9" id="other" {% if user and user.sex == 9 %} checked {% endif %}>
+            <label for="other">Other</label>
+          </p>
+        </div>
+      </div>
+
+      <div class="col s12" style="margin-bottom: 1em;">
+        <div class="input-field col s4">
+          <select required class="validate" name="year">
+            <option value="" disabled selected>Select an option</option>
+            {% for year in years %}
+            <option value="{{year.id}}" {% if user and user.year == year %} selected {% endif %}>{{year.name.title()}}</option>
+            {% endfor %}
+          </select>
+          <label for="year">Year</label>
+        </div>
+      </div>
+
+      <div class="col s12" style="margin-bottom: 1em;">
+        <div class="input-field col s4">
+          <select required name="school">
+            <option value="" disabled selected>Select an option</option>
+            {% for school in schools %}
+            <option value="{{school.id}}" {% if user and user.school == school %} selected {% endif %}>{{school.name}}</option>
+            {% endfor %}
+          </select>
+          <label for="school">School</label>
+        </div>
+      </div>
+
+      <div class="col s12">
+        <button type="submit" class="btn waves-effect waves-light red darken-4">Save Profile
+          <i class="material-icons right">save</i>
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}

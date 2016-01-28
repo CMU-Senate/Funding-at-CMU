@@ -25,7 +25,7 @@ from social.apps.flask_app.default.models import init_social
 app.config['SECRET_KEY'] = 'development'
 app.config['SESSION_PROTECTION'] = 'strong'
 app.config['SOCIAL_AUTH_LOGIN_URL'] = '/login'
-app.config['SOCIAL_AUTH_LOGIN_REDIRECT_URL'] = '/browse'
+app.config['SOCIAL_AUTH_LOGIN_REDIRECT_URL'] = '/?logged_in=1'
 app.config['SOCIAL_AUTH_USER_MODEL'] = 'models.User'
 app.config['SOCIAL_AUTH_AUTHENTICATION_BACKENDS'] = ('social.backends.google.GoogleOAuth2', )
 app.config['SOCIAL_AUTH_FIELDS_STORED_IN_SESSION'] = ['keep']

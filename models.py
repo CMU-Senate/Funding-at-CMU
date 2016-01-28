@@ -32,6 +32,11 @@ class User(db.Model, UserMixin):
     additions = db.relationship('FundingSource', backref='added_by')
     admin = db.Column(db.Boolean)
     username = db.Column(db.String(100))
+    profile_set = db.Column(db.Boolean, default=False)
+    sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
+    school_id = db.Column(db.String(3), db.ForeignKey('funding_school.id'))
+    citizen = db.Column(db.Boolean)
+    year_id = db.Column(db.Integer, db.ForeignKey('funding_year.id'))
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id', kwargs.get('username'))
@@ -52,6 +57,7 @@ class FundingSource(db.Model):
     deadline = db.Column(db.DateTime)
     other_info = db.Column(db.Text)
     link = db.Column(db.String(2048))
+    independent = db.Column(db.Boolean)
 
     added_by_id = db.Column(db.String(8), db.ForeignKey('user.id'))
 
@@ -59,7 +65,6 @@ class FundingSource(db.Model):
     sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
     schools = db.relationship('FundingSchool', secondary=schools, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
     citizen = db.Column(db.Boolean)
-    independent = db.Column(db.Boolean)
     years = db.relationship('FundingYear', secondary=years, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
 
     def __repr__(self):
@@ -83,6 +88,7 @@ class FundingCategory(db.Model):
 class FundingSchool(db.Model):
     id = db.Column(db.String(3), primary_key=True)
     name = db.Column(db.String(50), unique=True)
+    users = db.relationship(User, backref='school')
 
     def __init__(self, id, name):
         self.id = id
@@ -94,6 +100,7 @@ class FundingSchool(db.Model):
 class FundingYear(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), unique=True)
+    users = db.relationship(User, backref='year')
 
     def __repr__(self):
         return '<Funding Year %r>' % self.name.title()
