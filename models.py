@@ -34,9 +34,9 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(100))
     profile_set = db.Column(db.Boolean, default=False)
     sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
-    school = db.ForeignKey('FundingSchool')
+    school_id = db.Column(db.String(3), db.ForeignKey('funding_school.id'))
     citizen = db.Column(db.Boolean)
-    year = db.ForeignKey('FundingYear')
+    year_id = db.Column(db.Integer, db.ForeignKey('funding_year.id'))
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id', kwargs.get('username'))
@@ -88,6 +88,7 @@ class FundingCategory(db.Model):
 class FundingSchool(db.Model):
     id = db.Column(db.String(3), primary_key=True)
     name = db.Column(db.String(50), unique=True)
+    users = db.relationship(User, backref='school')
 
     def __init__(self, id, name):
         self.id = id
@@ -99,6 +100,7 @@ class FundingSchool(db.Model):
 class FundingYear(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(10), unique=True)
+    users = db.relationship(User, backref='year')
 
     def __repr__(self):
         return '<Funding Year %r>' % self.name.title()
