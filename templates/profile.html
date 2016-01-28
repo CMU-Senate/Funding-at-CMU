@@ -10,19 +10,19 @@
 
     <br>
 
-    <form class="row" method="post">
+    <form class="row" method="post" novalidate>
       <div class="col s12" style="margin-bottom: 1em;">
         <div class="col s4">
           <p style="display: inline-block; margin-right: 1em;">
-            <input name="gender" type="radio" value="male" id="male" required>
+            <input name="sex" type="radio" value="1" id="male" required {% if user and user.sex == 1 %} checked {% endif %}>
             <label for="male">Male</label>
           </p>
           <p style="display: inline-block; margin-right: 1em;">
-            <input name="gender" type="radio" value="female" id="female">
+            <input name="sex" type="radio" value="2" id="female" {% if user and user.sex == 2 %} checked {% endif %}>
             <label for="female">Female</label>
           </p>
           <p style="display: inline-block; margin-right: 1em;">
-            <input name="gender" type="radio" value="other" id="other">
+            <input name="sex" type="radio" value="9" id="other" {% if user and user.sex == 9 %} checked {% endif %}>
             <label for="other">Other</label>
           </p>
         </div>
@@ -33,7 +33,7 @@
           <select required class="validate" name="year">
             <option value="" disabled selected>Select an option</option>
             {% for year in years %}
-            <option value="{{year.id}}">{{year.name.title()}}</option>
+            <option value="{{year.id}}" {% if user and user.year == year %} selected {% endif %}>{{year.name.title()}}</option>
             {% endfor %}
           </select>
           <label for="year">Year</label>
@@ -45,7 +45,7 @@
           <select required name="school">
             <option value="" disabled selected>Select an option</option>
             {% for school in schools %}
-            <option value="{{school.id}}">{{school.name}}</option>
+            <option value="{{school.id}}" {% if user and user.school == school %} selected {% endif %}>{{school.name}}</option>
             {% endfor %}
           </select>
           <label for="school">School</label>

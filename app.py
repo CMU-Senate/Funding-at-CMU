@@ -64,14 +64,21 @@ def profile():
         }
         return render_template('profile.html', **context)
     else:
-        gender = request.form.get('gender')
+        sex = request.form.get('sex')
         year = request.form.get('year')
         school = request.form.get('school')
-        print(gender, year, school)
+
+        if sex:
+            g.user.sex = int(sex)
+        if year:
+            g.user.year = db_session.query(FundingYear).get(year)
+        if school:
+            g.user.school = db_session.query(FundingSchool).get(school)
+
+        db_session.commit()
 
         flash('Profile saved.')
-        return render_template('profile.html', **context)
-
+        return redirect('/profile')
 
 @app.route('/browse')
 @app.route('/browse/<int:page>')
