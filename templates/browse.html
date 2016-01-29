@@ -7,7 +7,7 @@
   <div class="container">
     <div class="row">
       <div class="col s9">
-        <h3 class="amber-text text-darken-2 center" style="margin-bottom: 2rem;">Funding Sources</h3>
+        <h3 class="amber-text text-darken-2 center" style="margin-bottom: 1rem;">Funding Sources</h3>
       </div>
       <div class="input-field col s3">
         <i class="material-icons prefix">search</i>
@@ -17,67 +17,97 @@
     </div>
 
     <div class="row">
-      <ul class="collapsible popout" data-collapsible="accordion">
-        {% for source in sources %}
-        <li>
-          <div class="collapsible-header">
-            <i class="material-icons red-text text-darken-4">
-              {% if source.independent %} person {% else %} people {% endif %}
-            </i>
-            {{source.name}}
-
-            <div class="right">
-              {% for category in source.categories %}
-                <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="/browse?category={{category.id}}&page_size={{page_size}}">
-                  {{category.name}}
+      <div class="col m3">
+        <div class="card-panel large" style="margin-top: .25rem;">
+          <form>
+            <div class="row">
+              <div class="input-field col m10">
+                <select name="categories" multiple>
+                  <option value="" disabled selected>Filter by category</option>
+                  {% for category in categories %}
+                  <option value="{{category.id}}" {% if category.id in selected_categories %} selected {% endif %}>{{category.name}}</option>
+                  {% endfor %}
+                </select>
+                <label for="categories">Categories</label>
+              </div>
+              <div class="col m2" style="padding-top: 1.25rem;">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter" style="padding: 0 .5rem;">
+                  <i class="material-icons">clear</i>
                 </a>
-              {% endfor %}
+              </div>
+
+              <div class="col m12 center">
+                <button type="submit" class="btn waves-effect waves-light red darken-4">Filter
+                  <i class="material-icons right">filter_list</i>
+                </button>
+              </div>
             </div>
-          </div>
-          <div class="collapsible-body">
-            <div style="margin: 0; padding: 2rem;">
-              <h4 style="margin-top: 0;">
-                {{source.name}}
-                {% if source.link %}
-                  <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
-                {% endif %}
-              </h4>
-              <h5>{{source.sponsor.name}}</h5>
-              <div class="divider"></div>
-              <div class="section">
-                Due {{source.deadline.strftime('%B %d, %Y')}} <br>
-                {{source.grant_size}}
-                <br><br>
-                <div class="row">
-                  <div class="col s4">
-                    <h6><strong>Application</strong></h6> {{source.application}}
-                  </div>
-                  <div class="col s4">
-                    <h6><strong>Policies</strong></h6> {{source.policies}}
-                  </div>
-                  <div class="col s4">
-                    {% if source.other_info %}
-                      <h6><strong>Other Information</strong></h6> {{source.other_info}}
-                    {% endif %}
+          </form>
+        </div>
+      </div>
+      <div class="col m9">
+        <ul class="collapsible popout" data-collapsible="accordion">
+          {% for source in sources %}
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons red-text text-darken-4">
+                {% if source.independent %} person {% else %} people {% endif %}
+              </i>
+              {{source.name}}
+
+              <div class="right">
+                {% for category in source.categories %}
+                  <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="/browse?categories={{category.id}}&page_size={{page_size}}">
+                    {{category.name}}
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="collapsible-body">
+              <div style="margin: 0; padding: 2rem;">
+                <h4 style="margin-top: 0;">
+                  {{source.name}}
+                  {% if source.link %}
+                    <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
+                  {% endif %}
+                </h4>
+                <h5>{{source.sponsor.name}}</h5>
+                <div class="divider"></div>
+                <div class="section">
+                  Due {{source.deadline.strftime('%B %d, %Y')}} <br>
+                  {{source.grant_size}}
+                  <br><br>
+                  <div class="row">
+                    <div class="col s4">
+                      <h6><strong>Application</strong></h6> {{source.application}}
+                    </div>
+                    <div class="col s4">
+                      <h6><strong>Policies</strong></h6> {{source.policies}}
+                    </div>
+                    <div class="col s4">
+                      {% if source.other_info %}
+                        <h6><strong>Other Information</strong></h6> {{source.other_info}}
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="divider"></div>
-              <div class="section">
-                <h6><strong>Eligibility</strong></h6>
-                {{source.eligibility}} <br><br>
+                <div class="divider"></div>
+                <div class="section">
+                  <h6><strong>Eligibility</strong></h6>
+                  {{source.eligibility}} <br><br>
 
-                {% if source.sex == 0 %} Male <br> {% elif source.sex == 1 %} Female <br> {% endif %}
-                {% if source.citizen %} U.S. Citizen {% endif %}
+                  {% if source.sex == 0 %} Male <br> {% elif source.sex == 1 %} Female <br> {% endif %}
+                  {% if source.citizen %} U.S. Citizen {% endif %}
 
-                {% for school in source.schools %} {{school.name}}{% if not loop.last %}, {% endif %} {% endfor %} <br><br>
-                {% for year in source.years %} {{year.name.title()}}{% if not loop.last %}, {% endif %} {% endfor %}
+                  {% for school in source.schools %} {{school.name}}{% if not loop.last %}, {% endif %} {% endfor %} <br><br>
+                  {% for year in source.years %} {{year.name.title()}}{% if not loop.last %}, {% endif %} {% endfor %}
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
     <div class="row">
       <div class="left">

@@ -19,4 +19,9 @@ $(document).ready(function () {
         window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + inputs + '&' + params;
       }
     });
+
+    $('a.clearFilter').click(function () {
+      $('select option', $(this).parents('div.row')).removeAttr('selected');
+      $('select').material_select();
+    });
 });

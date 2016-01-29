@@ -86,12 +86,16 @@ def profile():
 def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
     search_query = request.args.get('q', None)
-    category = request.args.get('category', None)
+
+    categories = request.args.getlist('categories', None)
+    categories = list(map(int, categories)) if categories else []
 
     q = db_session.query(FundingSource)
 
-    if category:
-        q = db_session.query(FundingCategory).get(int(category)).sources
+    if categories:
+        q = q.join(FundingSource.categories)
+        for category in categories:
+            q = q.filter(FundingCategory.id.in_(categories))
 
     if search_query:
         title_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
@@ -101,19 +105,20 @@ def browse(page=0):
 
     params = {
         'q': search_query,
-        'category': category
+        'categories': ','.join(map(str, categories))
     }
     params = '&'.join(map(lambda x: '%s=%s' % x, filter(lambda x: x[1], params.items())))
 
     context = {
         'q': search_query,
-        'category': category,
+        'selected_categories': categories,
         'params': params,
         'page': page,
         'count': count,
         'page_size': page_size,
         'num_pages': math.ceil(count / page_size),
         'sources': q.offset(page * page_size).limit(page_size).all(),
+        'categories': db_session.query(FundingCategory).all()
     }
     return render_template('browse.html', **context)
 
