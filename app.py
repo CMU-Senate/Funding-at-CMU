@@ -97,6 +97,11 @@ def browse(page=0):
     if len(schools) == 1 and ',' in schools[0]:
         schools = schools[0].split(',')
 
+    years = request.args.getlist('years', None)
+    if len(years) == 1 and ',' in years[0]:
+        years = years[0].split(',')
+    years = list(map(int, years)) if years else []
+
     q = db_session.query(FundingSource)
 
     if categories:
@@ -106,6 +111,10 @@ def browse(page=0):
     if schools:
         q = q.join(FundingSource.schools)
         q = q.filter(FundingSchool.id.in_(schools))
+
+    if years:
+        q = q.join(FundingSource.years)
+        q = q.filter(FundingYear.id.in_(years))
 
     if search_query:
         title_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
@@ -119,6 +128,7 @@ def browse(page=0):
     params = {
         'q': search_query,
         'categories': ','.join(map(str, categories)),
+        'years': ','.join(map(str, years)),
         'schools': ','.join(schools),
         'sex': sex
     }
@@ -129,6 +139,7 @@ def browse(page=0):
         'selected_categories': categories,
         'selected_sex': sex,
         'selected_schools': schools,
+        'selected_years': years,
         'params': params,
         'page': page,
         'count': count,
@@ -136,7 +147,8 @@ def browse(page=0):
         'num_pages': math.ceil(count / page_size),
         'sources': q.offset(page * page_size).limit(page_size).all(),
         'categories': db_session.query(FundingCategory).all(),
-        'schools': db_session.query(FundingSchool).all()
+        'schools': db_session.query(FundingSchool).all(),
+        'years': db_session.query(FundingYear).all()
     }
     return render_template('browse.html', **context)
 

@@ -21,6 +21,7 @@
         <div class="card-panel large" style="margin-top: .25rem;">
           <form>
             <input type="hidden" name="page_size" value="{{page_size}}">
+            <input type="hidden" name="q" value="{{q}}">
 
             <div class="row">
               <div class="input-field col m10">
@@ -62,6 +63,22 @@
                   {% endfor %}
                 </select>
                 <label for="schools">Schools</label>
+              </div>
+              <div class="col m2 clearFilterContainer">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter">
+                  <i class="material-icons">clear</i>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col m10">
+                <select name="years" multiple>
+                  <option value="" disabled selected>Any</option>
+                  {% for year in years %}
+                  <option value="{{year.id}}" {% if year.id in selected_years %} selected {% endif %}>{{year.name.title()}}</option>
+                  {% endfor %}
+                </select>
+                <label for="years">Years</label>
               </div>
               <div class="col m2 clearFilterContainer">
                 <a class="waves-effect waves-light btn red darken-4 clearFilter">
