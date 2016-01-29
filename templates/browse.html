@@ -38,12 +38,28 @@
             <div class="row" style="margin-bottom: 0;">
               <div class="input-field col m10">
                 <select name="categories" multiple>
-                  <option value="" disabled selected>Filter by category</option>
+                  <option value="" disabled selected>Any</option>
                   {% for category in categories %}
                   <option value="{{category.id}}" {% if category.id in selected_categories %} selected {% endif %}>{{category.name}}</option>
                   {% endfor %}
                 </select>
                 <label for="categories">Categories</label>
+              </div>
+              <div class="col m2" style="padding-top: 1.25rem;">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter" style="padding: 0 .5rem;">
+                  <i class="material-icons">clear</i>
+                </a>
+              </div>
+            </div>
+            <div class="row" style="margin-bottom: 0;">
+              <div class="input-field col m10">
+                <select name="schools" multiple>
+                  <option value="" disabled selected>Any</option>
+                  {% for school in schools %}
+                  <option value="{{school.id}}" {% if school.id in selected_schools %} selected {% endif %}>{{school.name}}</option>
+                  {% endfor %}
+                </select>
+                <label for="schools">Schools</label>
               </div>
               <div class="col m2" style="padding-top: 1.25rem;">
                 <a class="waves-effect waves-light btn red darken-4 clearFilter" style="padding: 0 .5rem;">

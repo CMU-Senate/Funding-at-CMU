@@ -93,12 +93,19 @@ def browse(page=0):
         categories = categories[0].split(',')
     categories = list(map(int, categories)) if categories else []
 
+    schools = request.args.getlist('schools', None)
+    if len(schools) == 1 and ',' in schools[0]:
+        schools = schools[0].split(',')
+
     q = db_session.query(FundingSource)
 
     if categories:
         q = q.join(FundingSource.categories)
-        for category in categories:
-            q = q.filter(FundingCategory.id.in_(categories))
+        q = q.filter(FundingCategory.id.in_(categories))
+
+    if schools:
+        q = q.join(FundingSource.schools)
+        q = q.filter(FundingSchool.id.in_(schools))
 
     if search_query:
         title_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
@@ -112,6 +119,7 @@ def browse(page=0):
     params = {
         'q': search_query,
         'categories': ','.join(map(str, categories)),
+        'schools': ','.join(schools),
         'sex': sex
     }
     params = '&'.join(map(lambda x: '%s=%s' % x, filter(lambda x: x[1], params.items())))
@@ -120,13 +128,15 @@ def browse(page=0):
         'q': search_query,
         'selected_categories': categories,
         'selected_sex': sex,
+        'selected_schools': schools,
         'params': params,
         'page': page,
         'count': count,
         'page_size': page_size,
         'num_pages': math.ceil(count / page_size),
         'sources': q.offset(page * page_size).limit(page_size).all(),
-        'categories': db_session.query(FundingCategory).all()
+        'categories': db_session.query(FundingCategory).all(),
+        'schools': db_session.query(FundingSchool).all()
     }
     return render_template('browse.html', **context)
 
