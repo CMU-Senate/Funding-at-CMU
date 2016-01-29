@@ -21,7 +21,7 @@ $(document).ready(function () {
     });
 
     $('a.clearFilter').click(function () {
-      $('select option', $(this).parents('div.row')).removeAttr('selected');
+      $('select option', $(this).closest('div.row')).removeAttr('selected');
       $('select').material_select();
     });
 });
