@@ -87,6 +87,7 @@ def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
     search_query = request.args.get('q', None)
     sex = int(request.args.get('sex', '9'))
+    citizen = 1 if request.args.get('citizen') else 0
 
     categories = request.args.getlist('categories', None)
     if len(categories) == 1 and ',' in categories[0]:
@@ -123,6 +124,9 @@ def browse(page=0):
     if sex and sex in [1, 2]:
         q = q.filter(FundingSource.sex.in_([9, sex]))
 
+    if not citizen:
+        q = q.filter(FundingSource.citizen != 1)
+
     count = q.count()
 
     params = {
@@ -130,7 +134,8 @@ def browse(page=0):
         'categories': ','.join(map(str, categories)),
         'years': ','.join(map(str, years)),
         'schools': ','.join(schools),
-        'sex': sex
+        'sex': sex,
+        'citizen': citizen
     }
     params = '&'.join(map(lambda x: '%s=%s' % x, filter(lambda x: x[1], params.items())))
 
@@ -140,6 +145,7 @@ def browse(page=0):
         'selected_sex': sex,
         'selected_schools': schools,
         'selected_years': years,
+        'selected_citizen': citizen,
         'params': params,
         'page': page,
         'count': count,
