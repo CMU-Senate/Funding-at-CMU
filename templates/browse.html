@@ -20,7 +20,22 @@
       <div class="col m3">
         <div class="card-panel large" style="margin-top: .25rem;">
           <form>
-            <div class="row">
+            <div class="row" style="margin-bottom: 0;">
+              <div class="input-field col m10">
+                <select name="sex">
+                  <option value="9" {% if selected_sex == 9 %} selected {% endif %}>Any</option>
+                  <option value="1" {% if selected_sex == 1 %} selected {% endif %}>Male</option>
+                  <option value="2" {% if selected_sex == 2 %} selected {% endif %}>Female</option>
+                </select>
+                <label for="sex">Sex</label>
+              </div>
+              <div class="col m2" style="padding-top: 1.25rem;">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter" style="padding: 0 .5rem;">
+                  <i class="material-icons">clear</i>
+                </a>
+              </div>
+            </div>
+            <div class="row" style="margin-bottom: 0;">
               <div class="input-field col m10">
                 <select name="categories" multiple>
                   <option value="" disabled selected>Filter by category</option>
@@ -35,7 +50,8 @@
                   <i class="material-icons">clear</i>
                 </a>
               </div>
-
+            </div>
+            <div class="row section" style="margin-bottom: 0;">
               <div class="col m12 center">
                 <button type="submit" class="btn waves-effect waves-light red darken-4">Filter
                   <i class="material-icons right">filter_list</i>

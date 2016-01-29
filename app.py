@@ -86,8 +86,11 @@ def profile():
 def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
     search_query = request.args.get('q', None)
+    sex = int(request.args.get('sex', '9'))
 
     categories = request.args.getlist('categories', None)
+    if len(categories) == 1 and ',' in categories[0]:
+        categories = categories[0].split(',')
     categories = list(map(int, categories)) if categories else []
 
     q = db_session.query(FundingSource)
@@ -101,17 +104,22 @@ def browse(page=0):
         title_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
         q = q.filter(FundingSource.name.ilike('%{}%'.format(title_query)))
 
+    if sex and sex in [1, 2]:
+        q = q.filter(FundingSource.sex.in_([9, sex]))
+
     count = q.count()
 
     params = {
         'q': search_query,
-        'categories': ','.join(map(str, categories))
+        'categories': ','.join(map(str, categories)),
+        'sex': sex
     }
     params = '&'.join(map(lambda x: '%s=%s' % x, filter(lambda x: x[1], params.items())))
 
     context = {
         'q': search_query,
         'selected_categories': categories,
+        'selected_sex': sex,
         'params': params,
         'page': page,
         'count': count,
