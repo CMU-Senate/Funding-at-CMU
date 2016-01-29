@@ -7,7 +7,7 @@
   <div class="container">
     <div class="row">
       <div class="col s9">
-        <h3 class="amber-text text-darken-2 center" style="margin-bottom: 2rem;">Funding Sources</h3>
+        <h3 class="amber-text text-darken-2 center" style="margin-bottom: 1rem;">Funding Sources</h3>
       </div>
       <div class="input-field col s3">
         <i class="material-icons prefix">search</i>
@@ -16,68 +16,156 @@
       </div>
     </div>
 
-    <div class="row">
-      <ul class="collapsible popout" data-collapsible="accordion">
-        {% for source in sources %}
-        <li>
-          <div class="collapsible-header">
-            <i class="material-icons red-text text-darken-4">
-              {% if source.independent %} person {% else %} people {% endif %}
-            </i>
-            {{source.name}}
+    <div class="row" id="filters">
+      <div class="col m3">
+        <div class="card-panel large" style="margin-top: .25rem;">
+          <form>
+            <input type="hidden" name="page_size" value="{{page_size}}">
+            {% if q %}<input type="hidden" name="q" value="{{q}}">{% endif %}
 
-            <div class="right">
-              {% for category in source.categories %}
-                <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="/browse?category={{category.id}}&page_size={{page_size}}">
-                  {{category.name}}
+            <div class="row">
+              <div class="input-field col m10">
+                <select name="sex">
+                  <option value="9" {% if selected_sex == 9 %} selected {% endif %}>Any</option>
+                  <option value="1" {% if selected_sex == 1 %} selected {% endif %}>Male</option>
+                  <option value="2" {% if selected_sex == 2 %} selected {% endif %}>Female</option>
+                </select>
+                <label for="sex">Sex</label>
+              </div>
+              <div class="col m2 clearFilterContainer">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter">
+                  <i class="material-icons">clear</i>
                 </a>
-              {% endfor %}
+              </div>
             </div>
-          </div>
-          <div class="collapsible-body">
-            <div style="margin: 0; padding: 2rem;">
-              <h4 style="margin-top: 0;">
-                {{source.name}}
-                {% if source.link %}
-                  <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
-                {% endif %}
-              </h4>
-              <h5>{{source.sponsor.name}}</h5>
-              <div class="divider"></div>
-              <div class="section">
-                Due {{source.deadline.strftime('%B %d, %Y')}} <br>
-                {{source.grant_size}}
-                <br><br>
-                <div class="row">
-                  <div class="col s4">
-                    <h6><strong>Application</strong></h6> {{source.application}}
-                  </div>
-                  <div class="col s4">
-                    <h6><strong>Policies</strong></h6> {{source.policies}}
-                  </div>
-                  <div class="col s4">
-                    {% if source.other_info %}
-                      <h6><strong>Other Information</strong></h6> {{source.other_info}}
-                    {% endif %}
+            <div class="row">
+              <div class="input-field col m10">
+                <select name="categories" multiple>
+                  <option value="" disabled selected>Any</option>
+                  {% for category in categories %}
+                  <option value="{{category.id}}" {% if category.id in selected_categories %} selected {% endif %}>{{category.name}}</option>
+                  {% endfor %}
+                </select>
+                <label for="categories">Categories</label>
+              </div>
+              <div class="col m2 clearFilterContainer">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter">
+                  <i class="material-icons">clear</i>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col m10">
+                <select name="schools" multiple>
+                  <option value="" disabled selected>Any</option>
+                  {% for school in schools %}
+                  <option value="{{school.id}}" {% if school.id in selected_schools %} selected {% endif %}>{{school.name}}</option>
+                  {% endfor %}
+                </select>
+                <label for="schools">Schools</label>
+              </div>
+              <div class="col m2 clearFilterContainer">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter">
+                  <i class="material-icons">clear</i>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col m10">
+                <select name="years" multiple>
+                  <option value="" disabled selected>Any</option>
+                  {% for year in years %}
+                  <option value="{{year.id}}" {% if year.id in selected_years %} selected {% endif %}>{{year.name.title()}}</option>
+                  {% endfor %}
+                </select>
+                <label for="years">Years</label>
+              </div>
+              <div class="col m2 clearFilterContainer">
+                <a class="waves-effect waves-light btn red darken-4 clearFilter">
+                  <i class="material-icons">clear</i>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="input-field col m12" style="margin-top: -.5rem; margin-bottom: 1rem;">
+                <input type="checkbox" id="citizen" name="citizen" {% if selected_citizen %} checked {% endif %}>
+                <label for="citizen">U.S. Citizen</label>
+              </div>
+            </div>
+
+            <div class="row section">
+              <div class="col m12 center">
+                <button type="submit" class="btn waves-effect waves-light red darken-4">Filter
+                  <i class="material-icons right">filter_list</i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col m9">
+        <ul class="collapsible popout" data-collapsible="accordion">
+          {% for source in sources %}
+          <li>
+            <div class="collapsible-header">
+              <i class="material-icons red-text text-darken-4">
+                {% if source.independent %} person {% else %} people {% endif %}
+              </i>
+              {{source.name}}
+
+              <div class="right">
+                {% for category in source.categories %}
+                  <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="/browse?categories={{category.id}}&page_size={{page_size}}">
+                    {{category.name}}
+                  </a>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="collapsible-body">
+              <div style="margin: 0; padding: 2rem;">
+                <h4 style="margin-top: 0;">
+                  {{source.name}}
+                  {% if source.link %}
+                    <a href="{{source.link}}" target="_blank"><i class="material-icons red-text text-darken-4">link</i></a>
+                  {% endif %}
+                </h4>
+                <h5>{{source.sponsor.name}}</h5>
+                <div class="divider"></div>
+                <div class="section">
+                  Due {{source.deadline.strftime('%B %d, %Y')}} <br>
+                  {{source.grant_size}}
+                  <br><br>
+                  <div class="row">
+                    <div class="col s4">
+                      <h6><strong>Application</strong></h6> {{source.application}}
+                    </div>
+                    <div class="col s4">
+                      <h6><strong>Policies</strong></h6> {{source.policies}}
+                    </div>
+                    <div class="col s4">
+                      {% if source.other_info %}
+                        <h6><strong>Other Information</strong></h6> {{source.other_info}}
+                      {% endif %}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="divider"></div>
-              <div class="section">
-                <h6><strong>Eligibility</strong></h6>
-                {{source.eligibility}} <br><br>
+                <div class="divider"></div>
+                <div class="section">
+                  <h6><strong>Eligibility</strong></h6>
+                  {{source.eligibility}} <br><br>
 
-                {% if source.sex == 0 %} Male <br> {% elif source.sex == 1 %} Female <br> {% endif %}
-                {% if source.citizen %} U.S. Citizen {% endif %}
+                  {% if source.sex == 0 %} Male <br> {% elif source.sex == 1 %} Female <br> {% endif %}
+                  {% if source.citizen %} U.S. Citizen {% endif %}
 
-                {% for school in source.schools %} {{school.name}}{% if not loop.last %}, {% endif %} {% endfor %} <br><br>
-                {% for year in source.years %} {{year.name.title()}}{% if not loop.last %}, {% endif %} {% endfor %}
+                  {% for school in source.schools %} {{school.name}}{% if not loop.last %}, {% endif %} {% endfor %} <br><br>
+                  {% for year in source.years %} {{year.name.title()}}{% if not loop.last %}, {% endif %} {% endfor %}
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
     <div class="row">
       <div class="left">

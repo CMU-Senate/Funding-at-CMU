@@ -25,3 +25,16 @@ main {
  .input-field .prefix.active {
    color: #000;
  }
+
+.clearFilter {
+  padding: 0 .5rem;
+  margin-left: -.25rem;
+}
+
+div.row#filters div.row {
+  margin-bottom: 0;
+}
+
+div.clearFilterContainer {
+  padding-top: 1.25rem !important;
+}
