@@ -67,6 +67,7 @@ def profile():
         sex = request.form.get('sex')
         year = request.form.get('year')
         school = request.form.get('school')
+        citizen = request.form.get('citizen')
 
         if sex:
             g.user.sex = int(sex)
@@ -74,6 +75,8 @@ def profile():
             g.user.year = db_session.query(FundingYear).get(year)
         if school:
             g.user.school = db_session.query(FundingSchool).get(school)
+
+        g.user.citizen = bool(citizen)
 
         db_session.commit()
 
