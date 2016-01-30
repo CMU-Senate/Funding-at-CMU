@@ -81,7 +81,7 @@ def profile():
         db_session.commit()
 
         flash('Profile saved.')
-        return redirect('/profile')
+        return redirect('/')
 
 @app.route('/browse')
 @app.route('/browse/<int:page>')
