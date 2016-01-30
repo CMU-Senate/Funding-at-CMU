@@ -28,4 +28,13 @@ $(document).ready(function () {
     $('select[name=sort_order]').change(function () {
       $('div#filters form').submit();
     });
+
+    $('div#filters form').submit(function () {
+      if(!$('select[name=years]').val()) {
+        $('form input[name=years_cleared]').val('1');
+      }
+      if(!$('select[name=schools]').val()) {
+        $('form input[name=schools_cleared]').val('1');
+      }
+    });
 });

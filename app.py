@@ -89,8 +89,8 @@ def profile():
 def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
     search_query = request.args.get('q', None)
-    sex = int(request.args.get('sex', '9'))
-    citizen = 1 if request.args.get('citizen') else 0
+    sex = int(request.args.get('sex', g.user.sex))
+    citizen = request.args.get('citizen', g.user.citizen)
     sort_order = request.args.get('sort_order', 'title_asc')
 
     categories = request.args.getlist('categories', None)
@@ -99,11 +99,15 @@ def browse(page=0):
     categories = list(map(int, categories)) if categories else []
 
     schools = request.args.getlist('schools', None)
-    if len(schools) == 1 and ',' in schools[0]:
+    if not schools and not request.args.get('schools_cleared', False) and g.user.school:
+        schools = [g.user.school.id]
+    elif len(schools) == 1 and ',' in schools[0]:
         schools = schools[0].split(',')
 
     years = request.args.getlist('years', None)
-    if len(years) == 1 and ',' in years[0]:
+    if not years and not request.args.get('years_cleared', False) and g.user.year:
+        years = [g.user.year.id]
+    elif len(years) == 1 and ',' in years[0]:
         years = years[0].split(',')
     years = list(map(int, years)) if years else []
 
