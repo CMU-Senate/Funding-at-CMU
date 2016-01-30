@@ -24,4 +24,8 @@ $(document).ready(function () {
       $('select option', $(this).closest('div.row')).removeAttr('selected');
       $('select').material_select();
     });
+
+    $('select[name=sort_order]').change(function () {
+      $('div#filters form').submit();
+    });
 });

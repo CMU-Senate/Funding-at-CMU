@@ -7,7 +7,7 @@ from util import read_db
 from flask import render_template, request, redirect, session, abort, flash, g
 from flask.ext import login
 from flask.ext.login import login_required, logout_user
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, desc
 from sqlalchemy_utils import escape_like
 from sqlalchemy.ext.serializer import loads, dumps
 from flask import send_file
@@ -91,6 +91,7 @@ def browse(page=0):
     search_query = request.args.get('q', None)
     sex = int(request.args.get('sex', '9'))
     citizen = 1 if request.args.get('citizen') else 0
+    sort_order = request.args.get('sort_order', 'title_asc')
 
     categories = request.args.getlist('categories', None)
     if len(categories) == 1 and ',' in categories[0]:
@@ -130,6 +131,18 @@ def browse(page=0):
     if not citizen:
         q = q.filter(FundingSource.citizen != 1)
 
+    sorts = {
+        'title_asc': FundingSource.name,
+        'title_desc': desc(FundingSource.name),
+        'deadline_nearest': FundingSource.deadline,
+        'deadline_farthest': desc(FundingSource.deadline)
+    }
+
+    if sort_order in sorts:
+        q = q.order_by(sorts[sort_order])
+    else:
+        q = q.order_by(FundingSource.name)
+
     count = q.count()
 
     params = {
@@ -138,7 +151,8 @@ def browse(page=0):
         'years': ','.join(map(str, years)),
         'schools': ','.join(schools),
         'sex': sex,
-        'citizen': citizen
+        'citizen': citizen,
+        'sort_order': sort_order
     }
     params = '&'.join(map(lambda x: '%s=%s' % x, filter(lambda x: x[1], params.items())))
 
@@ -149,6 +163,7 @@ def browse(page=0):
         'selected_schools': schools,
         'selected_years': years,
         'selected_citizen': citizen,
+        'selected_sort_order': sort_order,
         'params': params,
         'page': page,
         'count': count,
@@ -157,7 +172,13 @@ def browse(page=0):
         'sources': q.offset(page * page_size).limit(page_size).all(),
         'categories': db_session.query(FundingCategory).all(),
         'schools': db_session.query(FundingSchool).all(),
-        'years': db_session.query(FundingYear).all()
+        'years': db_session.query(FundingYear).all(),
+        'sort_options': [
+            ['title_asc', 'Title (A-Z)'],
+            ['title_desc', 'Title (Z-A)'],
+            ['deadline_nearest', 'Deadline (soonest first)'],
+            ['deadline_farthest', 'Deadline (farthest first)'],
+        ]
     }
     return render_template('browse.html', **context)
 

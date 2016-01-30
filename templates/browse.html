@@ -20,6 +20,19 @@
       <div class="col m3">
         <div class="card-panel large" style="margin-top: .25rem;">
           <form>
+            <div class="row">
+              <div class="input-field col m12">
+                <select name="sort_order">
+                  {% for sort_option in sort_options %}
+                  <option value="{{sort_option[0]}}" {% if sort_option[0] == selected_sort_order %} selected {% endif %}>{{sort_option[1]}}</option>
+                  {% endfor %}
+                </select>
+                <label for="sort_order">Sort by</label>
+              </div>
+            </div>
+
+            <div class="row" style="padding-bottom: .5rem; padding-right: 1.5rem; padding-left: 1.5rem;"><hr></div>
+
             <input type="hidden" name="page_size" value="{{page_size}}">
             {% if q %}<input type="hidden" name="q" value="{{q}}">{% endif %}
 
@@ -167,7 +180,7 @@
         </ul>
       </div>
     </div>
-    <div class="row">
+    <div class="row" style="margin-bottom: 0;">
       <div class="left">
         <ul class="pagination center">
           <li {% if page == 0 %} class="disabled" {% else %} class="waves-effect" {% endif %}>
