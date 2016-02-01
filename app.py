@@ -89,8 +89,8 @@ def profile():
 def browse(page=0):
     page_size = int(request.args.get('page_size', '10'))
     search_query = request.args.get('q', None)
-    sex = int(request.args.get('sex', g.user.sex))
-    citizen = request.args.get('citizen', g.user.citizen)
+    sex = int(request.args.get('sex', g.user.sex if g.user.sex else '9'))
+    citizen = request.args.get('citizen', bool(g.user.citizen))
     sort_order = request.args.get('sort_order', 'title_asc')
 
     categories = request.args.getlist('categories', None)
