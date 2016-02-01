@@ -28,11 +28,10 @@ def main():
         ('CFA', 'College of Fine Arts'),
         ('CIT', 'College of Engineering'),
         ('MCS', 'Mellon College of Science'),
-        ('HSS', 'H. John Heinz III College'),
         ('TSB', 'Tepper School of Business'),
         ('BXA', 'Interdisciplinary Programs'),
         ('SCS', 'School of Computer Science'),
-        ('DET', 'Dietrich College of Humanities & Social Sciences')
+        ('HSS', 'Dietrich College of Humanities & Social Sciences')
     ]
     for fundingSchool in fundingSchools:
         db.session.add(FundingSchool(*fundingSchool))
