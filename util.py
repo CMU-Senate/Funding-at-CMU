@@ -5,15 +5,6 @@ import logging
 from models import *
 from config import db_session
 
-andrewIDs = {
-	'Michael': 'mcgormle',
-	'Aashir': 'amaster',
-	'Jeannie': 'jemichae',
-	'Nadia': 'nrazek',
-	'Shelly': 'sbalassy',
-	'Stephanie': 'semore'
-}
-
 fundingSchools = {
 	'3': 'CFA',
 	'4': 'CIT',
@@ -41,18 +32,6 @@ def process_source(i, source):
 	other_info = source['Any other relevant information']
 	link = source['External link']
 	eligibility = source['Eligibility']
-
-	added_by_name = source['Added by']
-	if added_by_name not in andrewIDs:
-		logging.error('Source #%d was added by %s with unknown Andrew ID, skipping.' % (i, added_by_name))
-		return
-	added_by_id = andrewIDs[source['Added by']]
-	added_by = db_session.query(User).filter_by(id=added_by_id).limit(1).first()
-	if not added_by:
-		added_by = User(id=added_by_id, admin=True)
-		db_session.add(added_by)
-		db_session.commit()
-		logging.info('Added user %s with known Andrew ID' % added_by_id)
 
 	category_names = list(map(str.strip, source['Category'].split(',')))
 	categories = []
@@ -111,7 +90,6 @@ def process_source(i, source):
 		'other_info': other_info,
 		'link': link,
 		'eligibility': eligibility,
-		'added_by': added_by,
 		'categories': categories,
 		'schools': schools,
 		'citizen': citizen,

@@ -27,9 +27,14 @@ sponsors = db.Table('sponsors',
     db.UniqueConstraint('funding_sponsor_id', 'funding_source_id')
 )
 
+admins = [
+	'mgormle',
+	'semore',
+	'scherivi'
+]
+
 class User(db.Model, UserMixin):
     id = db.Column(db.String(8), primary_key=True) #andrew_id
-    additions = db.relationship('FundingSource', backref='added_by')
     admin = db.Column(db.Boolean)
     username = db.Column(db.String(100))
     profile_set = db.Column(db.Boolean, default=False)
@@ -41,7 +46,7 @@ class User(db.Model, UserMixin):
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id', kwargs.get('email').split('@')[0])
         self.username = self.id
-        self.admin = kwargs.get('admin', False)
+        self.admin = kwargs.get('admin', self.id in admins)
 
     def __repr__(self):
         return 'User <%r>' % self.id
@@ -58,8 +63,6 @@ class FundingSource(db.Model):
     other_info = db.Column(db.Text)
     link = db.Column(db.String(2048))
     independent = db.Column(db.Boolean)
-
-    added_by_id = db.Column(db.String(8), db.ForeignKey('user.id'))
 
     eligibility = db.Column(db.Text)
     sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
