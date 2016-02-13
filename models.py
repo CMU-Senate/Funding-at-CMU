@@ -39,7 +39,7 @@ class User(db.Model, UserMixin):
     year_id = db.Column(db.Integer, db.ForeignKey('funding_year.id'))
 
     def __init__(self, *args, **kwargs):
-        self.id = kwargs.get('id', kwargs.get('username'))
+        self.id = kwargs.get('id', kwargs.get('email').split('@')[0])
         self.username = self.id
         self.admin = kwargs.get('admin', False)
 
