@@ -126,8 +126,12 @@ def browse(page=0):
         q = q.filter(FundingYear.id.in_(years))
 
     if search_query:
-        title_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
-        q = q.filter(FundingSource.name.ilike('%{}%'.format(title_query)))
+        parsed_query = escape_like(search_query).replace('_', '__').replace('*', '%').replace('?', '_')
+        q = q.join(FundingSource.sponsor)
+        q = q.filter(
+            FundingSource.name.ilike('%{}%'.format(parsed_query)) |
+            FundingSponsor.name.ilike('%{}%'.format(parsed_query))
+        )
 
     if sex and sex in [1, 2]:
         q = q.filter(FundingSource.sex.in_([9, sex]))
