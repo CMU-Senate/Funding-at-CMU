@@ -7,7 +7,7 @@
   <div class="container">
     <div class="row">
       <div class="col s9">
-        <h3 class="amber-text text-darken-2 center" style="margin-bottom: 1rem;">Funding Sources</h3>
+        <h3 class="amber-text text-darken-3 center" style="margin-bottom: 1rem;">Funding Sources</h3>
       </div>
       <div class="input-field col s3">
         <i class="material-icons prefix">search</i>
@@ -130,7 +130,7 @@
 
               <div class="right">
                 {% for category in source.categories|sort(attribute='name') %}
-                  <a class="waves-effect waves-red btn-flat amber-text text-darken-2" href="/browse?categories={{category.id}}&page_size={{page_size}}" style="padding: 0 1rem;">
+                  <a class="waves-effect waves-red btn-flat amber-text text-darken-3" href="/browse?categories={{category.id}}&page_size={{page_size}}" style="padding: 0 1rem;">
                     {{category.name}}
                   </a>
                 {% endfor %}
@@ -203,7 +203,7 @@
           <span class="light">{{count}} results</span>
         </ul>
       </div>
-      <div class="input-field right amber-text text-darken-2">
+      <div class="input-field right amber-text text-darken-3">
         <select id="pageSizeSelector" name="page_size" data-params="{{params}}">
           <option value="10" {% if page_size == 10 %} selected {% endif %}>10</option>
           <option value="15" {% if page_size == 15 %} selected {% endif %}>15</option>
