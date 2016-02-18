@@ -199,7 +199,9 @@ def admin(action=None):
     if g.user and g.user.is_authenticated and g.user.admin:
         if not action:
             return render_template('admin.html', **{
-                'num_sources': db_session.query(FundingSource).count() if db_session.query(FundingSource) else 0
+                'num_sources': db_session.query(FundingSource).count() if db_session.query(FundingSource) else 0,
+                'admins': db_session.query(User).filter(User.admin==True).all(),
+                'non_admins': db_session.query(User).filter(User.admin==False).all()
             })
         elif action == 'add' and request.method == 'POST':
             spreadsheet_url = request.form.get('spreadsheet_url')
@@ -222,6 +224,21 @@ def admin(action=None):
             for source in sources:
                 db_session.merge(source)
             flash('Merged %s funding sources.' % len(sources))
+            return redirect('/admin')
+        elif action == 'delete_admin' and request.method == 'POST':
+            admin = request.form.get('admin')
+            db_session.query(User).get(admin).admin = False
+            db_session.commit()
+            flash('Removed %s from the admin list.' % admin)
+            return redirect('/admin')
+        elif action == 'add_admins' and request.method == 'POST':
+            print(request.form.get('admins'))
+            admins = request.form.getlist('admins')
+            print(admins)
+            for admin in admins:
+                db_session.query(User).get(admin).admin = True
+            db_session.commit()
+            flash('Added %s admin%s.' % (len(admins), 's' if len(admins) > 1 else ''))
             return redirect('/admin')
         else:
             abort(400)

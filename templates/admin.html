@@ -6,6 +6,12 @@
 <div class="section">
   <div class="container">
     <h2 class="center amber-text text-darken-2" style="margin-bottom: 2rem;">Administration</h2>
+
+    <h4 class="center amber-text text-darken-2">Sources</h4>
+    <h6 class="center amber-text text-darken-2">
+      {{ num_sources }} sources currently in database.
+    </h6>
+
     <div class="row center section">
       <form method="post" action="/admin/add">
         <div class="input-field col s12 red-text text-darken-4">
@@ -59,9 +65,48 @@
       </div>
     </div>
 
-    <h4 class="center amber-text text-darken-2">
-      {{ num_sources }} sources currently in database.
-    </h4>
+    <h4 class="center amber-text text-darken-2">Administrators</h4>
+    <h6 class="center amber-text text-darken-2">
+      {{ admins|length }} admin{%if admins|length > 1 %}s{% endif %}
+    </h6>
+    <br>
+    <div class="row">
+      <div class="col s5">
+        <div style="padding-bottom: .5rem;">
+          <span class="light">You can remove any administrator aside from yourself</span>
+        </div>
+        {% for admin in admins %}
+        <div class="chip">
+          <span class="id">{{admin.id}}</span>
+          {% if admin.id != user.id %}
+            <i class="material-icons deleteAdmin">close</i>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="col s7">
+        <form method="post" action="/admin/add_admins">
+          <div class="input-field col s7">
+            <select multiple name="admins" id="admins">
+              <option value="" disabled selected>Choose user(s)</option>
+              {% for user in non_admins|sort(attribute='id') %}
+              <option value="{{user.id}}">{{user.id}}</option>
+              {% endfor %}
+            </select>
+            <label for="admins">Add Administrators</label>
+          </div>
+          <div class="input-field col s5">
+            <button type="submit" class="btn btn-sm waves-effect waves-light red darken-4">Add Admin(s)
+              <i class="material-icons right">person_add</i>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}

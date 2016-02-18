@@ -28,9 +28,10 @@ sponsors = db.Table('sponsors',
 )
 
 admins = [
-	'mgormle',
-	'semore',
-	'scherivi'
+    'mgormle',
+    'semore',
+    'scherivi',
+    'senate-finance'
 ]
 
 class User(db.Model, UserMixin):
