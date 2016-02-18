@@ -172,6 +172,8 @@ def browse(page=0):
         'selected_years': years,
         'selected_citizen': citizen,
         'selected_sort_order': sort_order,
+        'schools_cleared': request.args.get('schools_cleared', False),
+        'years_cleared': request.args.get('years_cleared', False),
         'params': params,
         'page': page,
         'count': count,
