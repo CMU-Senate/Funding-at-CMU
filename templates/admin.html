@@ -10,7 +10,24 @@
     <h4 class="center amber-text text-darken-3">Sources</h4>
     <h6 class="center amber-text text-darken-3">
       {{ num_sources }} sources currently in database.
+      {% if errors %}
+      <button class="waves-effect waves-light btn modal-trigger red darken-4" data-target="errorModal">
+        {{ errors.split('\n')|length }} Error{% if errors.split('\n')|length > 1 %}s{% endif %}
+        <i class="material-icons right">error</i>
+      </button>
+      {% endif %}
     </h6>
+
+
+    <div id="errorModal" class="modal modal-fixed-footer">
+      <div class="modal-content">
+        <h4>Source Processing Errors</h4>
+        <pre>{{ errors }}</pre>
+      </div>
+      <div class="modal-footer">
+        <a href="#" class="modal-action modal-close waves-effect waves-light waves-red btn-flat">Close</a>
+      </div>
+    </div>
 
     <div class="row center section">
       <form method="post" action="/admin/add">

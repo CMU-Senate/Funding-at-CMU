@@ -4,6 +4,7 @@ import datetime
 import logging
 from models import *
 from config import db_session
+import io
 
 fundingSchools = {
 	'3': 'CFA',
@@ -111,13 +112,23 @@ def read_db(csv_link):
 	for code, year in fundingYears.items():
 		fundingYears[code] = db_session.query(FundingYear).filter_by(name=year).limit(1).first()
 
+	logCaptureString = io.StringIO()
+	ch = logging.StreamHandler(logCaptureString)
+	ch.setLevel(logging.DEBUG)
+	logging.getLogger().addHandler(ch)
+
 	r = requests.get(csv_link)
 	if r.status_code == 200:
 		reader = csv.DictReader(r.text.splitlines())
 		sources = []
 		for i, source in enumerate(reader):
-			source = process_source(i, source)
+			source = process_source(i + 2, source)
 			sources.append(source)
-		return sources
+
+		logString = logCaptureString.getvalue()
+		logCaptureString.close()
+		logging.getLogger().removeHandler(ch)
+
+		return sources, logString
 	else:
-		return []
+		return [], 'Unable to retrieve CSV (HTTP %s)' % r.status_code

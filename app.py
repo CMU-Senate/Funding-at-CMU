@@ -4,13 +4,12 @@ import math
 import io
 from config import app, version, login_manager, db_session, engine
 from util import read_db
-from flask import render_template, request, redirect, session, abort, flash, g
+from flask import render_template, request, redirect, session, abort, flash, g, send_file
 from flask.ext import login
 from flask.ext.login import login_required, logout_user
 from sqlalchemy import MetaData, desc
 from sqlalchemy_utils import escape_like
 from sqlalchemy.ext.serializer import loads, dumps
-from flask import send_file
 from models import *
 from db_init import main
 
@@ -201,17 +200,20 @@ def admin(action=None):
             return render_template('admin.html', **{
                 'num_sources': db_session.query(FundingSource).count() if db_session.query(FundingSource) else 0,
                 'admins': db_session.query(User).filter(User.admin==True).all(),
-                'non_admins': db_session.query(User).filter(User.admin==False).all()
+                'non_admins': db_session.query(User).filter(User.admin==False).all(),
+                'errors': session['errors'] if 'errors' in session else ''
             })
         elif action == 'add' and request.method == 'POST':
             spreadsheet_url = request.form.get('spreadsheet_url')
             if not spreadsheet_url:
                 abort(400)
             else:
-                sources = read_db(spreadsheet_url)
+                sources, errors = read_db(spreadsheet_url)
                 flash('Added %s funding sources.' % len(list(filter(bool, sources))))
+                session['errors'] = errors
                 return redirect('/admin')
         elif action == 'delete':
+            session['errors'] = ''
             flash('Deleted %s funding sources.' % db_session.query(FundingSource).delete())
             db_session.commit()
             return redirect('/admin')

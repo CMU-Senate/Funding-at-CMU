@@ -1,5 +1,6 @@
 $(document).ready(function () {
   $('select').material_select();
+  $('.modal-trigger').leanModal();
 
   $('i.deleteAdmin').click(function (ev) {
     ev.preventDefault();
