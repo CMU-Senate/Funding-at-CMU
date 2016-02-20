@@ -61,6 +61,7 @@ class FundingSource(db.Model):
     policies = db.Column(db.Text)
     grant_size = db.Column(db.String(250))
     deadline = db.Column(db.DateTime)
+    has_time = db.Column(db.Boolean)
     other_info = db.Column(db.Text)
     link = db.Column(db.String(2048))
     independent = db.Column(db.Boolean)

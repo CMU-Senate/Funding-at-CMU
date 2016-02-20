@@ -2,9 +2,10 @@ import csv
 import requests
 import datetime
 import logging
+import io
+import iso8601
 from models import *
 from config import db_session
-import io
 
 fundingSchools = {
 	'3': 'CFA',
@@ -29,10 +30,17 @@ def process_source(i, source):
 	application = source['How to apply']
 	policies = source['Policies/Rules']
 	grant_size = source['Size of grant/max possible']
-	deadline = datetime.datetime.now() #datetime.datetime.strftime(source['Deadline'], '%m/%d/%y ...')
 	other_info = source['Any other relevant information']
 	link = source['External link']
 	eligibility = source['Eligibility']
+
+	try:
+		deadline_string = source['Deadlines']
+		has_time = 'T' in deadline_string
+		deadline = iso8601.parse_date(deadline_string)
+	except iso8601.iso8601.ParseError:
+		logging.error('Source #%d has invalid date "%s", skipping.' % (i, deadline_string))
+		return
 
 	category_names = list(map(str.strip, source['Category'].split(',')))
 	categories = []
@@ -88,6 +96,7 @@ def process_source(i, source):
 		'policies': policies,
 		'grant_size': grant_size,
 		'deadline': deadline,
+		'has_time': has_time,
 		'other_info': other_info,
 		'link': link,
 		'eligibility': eligibility,

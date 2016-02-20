@@ -147,7 +147,13 @@
                 <h5>{{source.sponsor.name}}</h5>
                 <div class="divider"></div>
                 <div class="section">
-                  Due {{source.deadline.strftime('%B %d, %Y')}} <br>
+                  Due
+                  {% if source.has_time %}
+                    {{source.deadline.strftime('%A, %B %-d, %Y by %-I:%M	%p')}}
+                  {% else %}
+                    {{source.deadline.strftime('%A, %B %-d, %Y')}}
+                  {% endif %}
+                  <br>
                   {{source.grant_size}}
                   <br><br>
                   <div class="row">
