@@ -12,7 +12,7 @@
 
     <form class="row" method="post" novalidate>
       <div class="col s12" style="margin-bottom: -.5rem;">
-        <div class="col s4">
+        <div class="col m4 s12">
           <p style="display: inline-block; margin-right: 1rem;">
             <input name="sex" type="radio" value="1" id="male" required {% if user and user.sex == 1 %} checked {% endif %}>
             <label for="male">Male</label>
@@ -34,7 +34,7 @@
       </div>
 
       <div class="col s12" style="margin-bottom: 1rem;">
-        <div class="input-field col s4">
+        <div class="input-field col m4 s12">
           <select required class="validate" name="year">
             <option value="" disabled selected>Select an option</option>
             {% for year in years %}
@@ -46,7 +46,7 @@
       </div>
 
       <div class="col s12" style="margin-bottom: 1rem;">
-        <div class="input-field col s4">
+        <div class="input-field col m4 s12">
           <select required name="school">
             <option value="" disabled selected>Select an option</option>
             {% for school in schools %}
