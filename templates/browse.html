@@ -39,7 +39,7 @@
             {% if q %}<input type="hidden" name="q" value="{{q}}">{% endif %}
 
             <div class="row">
-              <div class="input-field col m10">
+              <div class="input-field col m9">
                 <select name="sex">
                   <option value="9" {% if selected_sex == 9 %} selected {% endif %}>Any</option>
                   <option value="1" {% if selected_sex == 1 %} selected {% endif %}>Male</option>
@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="input-field col m10">
+              <div class="input-field col m9">
                 <select name="categories" multiple>
                   <option value="" disabled selected>Any</option>
                   {% for category in categories %}
@@ -70,7 +70,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="input-field col m10">
+              <div class="input-field col m9">
                 <select name="schools" multiple>
                   <option value="" disabled selected>Any</option>
                   {% for school in schools %}
@@ -86,7 +86,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="input-field col m10">
+              <div class="input-field col m9">
                 <select name="years" multiple>
                   <option value="" disabled selected>Any</option>
                   {% for year in years %}

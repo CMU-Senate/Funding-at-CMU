@@ -36,5 +36,7 @@ div.row#filters div.row {
 }
 
 div.clearFilterContainer {
-  padding-top: 1.25rem !important;
+  padding: 1.25rem .25rem 0 0 !important;
+  float: right !important;
+  margin-right: 0;
 }
