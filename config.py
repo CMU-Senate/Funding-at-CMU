@@ -35,9 +35,11 @@ app.config['SOCIAL_AUTH_GOOGLE_OAUTH2_AUTH_EXTRA_ARGUMENTS'] = {
     'approval_prompt': 'auto'
 }
 
-from gapp_creds import client_id, client_secret
-app.config['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY'] = client_id
-app.config['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET'] = client_secret
+google_oath2_client_id = ''
+google_oauth2_secret = ''
+
+app.config['SOCIAL_AUTH_GOOGLE_OAUTH2_KEY'] = google_oath2_client_id
+app.config['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET'] = google_oauth2_secret
 
 app.register_blueprint(social_auth)
 init_social(app, db_session)
