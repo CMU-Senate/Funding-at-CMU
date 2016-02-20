@@ -2,6 +2,7 @@
 
 import math
 import io
+import operator
 from config import app, version, login_manager, db_session, engine
 from util import read_db
 from flask import render_template, request, redirect, session, abort, flash, g, send_file
@@ -208,12 +209,16 @@ def admin(action=None):
             if not spreadsheet_url:
                 abort(400)
             else:
-                sources, errors = read_db(spreadsheet_url)
-                flash('Added %s funding sources.' % len(list(filter(bool, sources))))
+                sources, errors, statuses = read_db(spreadsheet_url)
+                flash('%s funding sources.' % '/'.join(map(lambda x: '%s: %s' % (x[0].title(), x[1]), reversed(sorted(statuses.items(), key=operator.itemgetter(1))))))
                 session['errors'] = errors
                 return redirect('/admin')
         elif action == 'delete':
             session['errors'] = ''
+            db_session.query(FundingSponsor).delete()
+            for table in [years, schools, categories]:
+                db_session.execute(table.delete(synchronize_session=False))
+                db_session.commit()
             flash('Deleted %s funding sources.' % db_session.query(FundingSource).delete())
             db_session.commit()
             return redirect('/admin')

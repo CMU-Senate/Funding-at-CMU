@@ -4,10 +4,11 @@ import datetime
 import logging
 import io
 import iso8601
+import collections
 from models import *
 from config import db_session
 
-fundingSchools = {
+fundingSchoolMappings = {
 	'3': 'CFA',
 	'4': 'CIT',
 	'5': 'MCS',
@@ -17,7 +18,7 @@ fundingSchools = {
 	'11': 'SCS'
 }
 
-fundingYears = {
+fundingYearMappings = {
 	'9': 'freshman',
     'A': 'sophomore',
     'B': 'junior',
@@ -25,7 +26,15 @@ fundingYears = {
     'D': 'graduate'
 }
 
-def process_source(i, source):
+def process_source(i, source, fundingSchools, fundingYears):
+	try:
+		source_id = int(source['ID'])
+	except ValueError:
+		logging.error('Source #%d has invalid ID "%s", skipping.' % (i, source['ID']))
+		return None, False
+
+	current_source = db_session.query(FundingSource).get(source_id)
+
 	name = source['Name']
 	application = source['How to apply']
 	policies = source['Policies/Rules']
@@ -34,13 +43,16 @@ def process_source(i, source):
 	link = source['External link']
 	eligibility = source['Eligibility']
 
+	if not name:
+		logging.error('Source #%d has no name, skipping.' % i)
+
 	try:
 		deadline_string = source['Deadlines']
 		has_time = 'T' in deadline_string
 		deadline = iso8601.parse_date(deadline_string)
 	except iso8601.iso8601.ParseError:
 		logging.error('Source #%d has invalid date "%s", skipping.' % (i, deadline_string))
-		return
+		return None, 'skipped'
 
 	category_names = list(map(str.strip, source['Category'].split(',')))
 	categories = []
@@ -49,7 +61,7 @@ def process_source(i, source):
 			category = db_session.query(FundingCategory).filter_by(name=category_name).limit(1).first()
 			if not category:
 				logging.error('Source #%d has invalid category %s, skipping.' % (i, repr(category_name)))
-				return
+				return None, 'skipped'
 			else:
 				categories.append(category)
 
@@ -91,6 +103,7 @@ def process_source(i, source):
 		sex = 9
 
 	fundingSourceParams = {
+		'id': source_id,
 		'name': name,
 		'application': application,
 		'policies': policies,
@@ -109,17 +122,26 @@ def process_source(i, source):
 		'sponsor': sponsor
 	}
 
-	source = FundingSource(**fundingSourceParams)
-	db_session.add(source)
-	db_session.commit()
+	if current_source:
+		modified = False
+		for param_name, param_val in fundingSourceParams.items():
+			if getattr(current_source, param_name) != param_val:
+				setattr(current_source, param_name, param_val)
+				modified = True
 
-	return source
+		if modified:
+			return current_source, 'updated'
+		else:
+			return current_source, 'unchanged'
+	else:
+		source = FundingSource(**fundingSourceParams)
+		db_session.add(source)
+		db_session.commit()
+		return source, 'added'
 
 def read_db(csv_link):
-	for code, school in fundingSchools.items():
-		fundingSchools[code] = db_session.query(FundingSchool).get(school)
-	for code, year in fundingYears.items():
-		fundingYears[code] = db_session.query(FundingYear).filter_by(name=year).limit(1).first()
+	fundingSchools = dict(map(lambda x: (x[0], db_session.query(FundingSchool).get(x[1])), fundingSchoolMappings.items()))
+	fundingYears = dict(map(lambda x: (x[0], db_session.query(FundingYear).filter_by(name=x[1]).limit(1).first()), fundingYearMappings.items()))
 
 	logCaptureString = io.StringIO()
 	ch = logging.StreamHandler(logCaptureString)
@@ -130,14 +152,26 @@ def read_db(csv_link):
 	if r.status_code == 200:
 		reader = csv.DictReader(r.text.splitlines())
 		sources = []
+		statuses = collections.Counter()
 		for i, source in enumerate(reader):
-			source = process_source(i + 2, source)
-			sources.append(source)
+			source, status = process_source(i + 2, source, fundingSchools, fundingYears)
+			if source:
+				sources.append(source)
+			statuses.update([status])
+
+		source_ids = list(map(lambda x: x.id, sources))
+		db_sources = list(map(lambda x: x.id, db_session.query(FundingSource).all()))
+		for source_id in set(db_sources) - set(source_ids):
+			q = db_session.query(FundingSource).filter_by(id=source_id)
+			if q.count():
+				q.delete()
+				statuses.update(['deleted'])
+			db_session.commit()
 
 		logString = logCaptureString.getvalue()
 		logCaptureString.close()
 		logging.getLogger().removeHandler(ch)
 
-		return sources, logString
+		return sources, logString, statuses
 	else:
 		return [], 'Unable to retrieve CSV (HTTP %s)' % r.status_code
