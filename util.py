@@ -130,10 +130,13 @@ def process_source(i, source, fundingSchools, fundingYears):
 				modified = True
 
 		if modified:
+			fundingSourceParams['updated_date'] = datetime.datetime.now()
+			db_session.commit()
 			return current_source, 'updated'
 		else:
 			return current_source, 'unchanged'
 	else:
+		fundingSourceParams['added_date'] = datetime.datetime.now()
 		source = FundingSource(**fundingSourceParams)
 		db_session.add(source)
 		db_session.commit()

@@ -66,6 +66,9 @@ class FundingSource(db.Model):
     link = db.Column(db.String(2048))
     independent = db.Column(db.Boolean)
 
+    added_date = db.Column(db.DateTime)
+    updated_date = db.Column(db.DateTime)
+
     eligibility = db.Column(db.Text)
     sex = db.Column(db.Integer) # https://en.wikipedia.org/wiki/ISO/IEC_5218
     schools = db.relationship('FundingSchool', secondary=schools, backref=db.backref('sources', lazy='dynamic'), cascade='delete')
