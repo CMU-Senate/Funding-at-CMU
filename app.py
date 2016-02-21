@@ -132,9 +132,9 @@ Category: %s
 Body:
 > %s
 ''' % (name, email, category, comments),  'plain')
-        html = MIMEText('''<b>From</b>: %s<%s>
-<b>Category</b>: %s
-<b>Body</b>:
+        html = MIMEText('''<b>From</b>: %s<%s><br>
+<b>Category</b>: %s<br>
+<b>Body</b>:<br>
 > %s
 ''' % (name, email, category, comments),  'html')
 
