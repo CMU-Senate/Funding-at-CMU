@@ -5,6 +5,7 @@ import logging
 import io
 import iso8601
 import collections
+import operator
 from models import *
 from config import db_session
 
@@ -124,9 +125,19 @@ def process_source(i, source, fundingSchools, fundingYears):
 
 	if current_source:
 		modified = False
-		for param_name, param_val in fundingSourceParams.items():
-			if getattr(current_source, param_name) != param_val:
-				setattr(current_source, param_name, param_val)
+		for param_name, new_val in fundingSourceParams.items():
+			current_val = getattr(current_source, param_name)
+			if type(new_val) == list:
+				if set(map(operator.attrgetter('id'), new_val)) != set(map(operator.attrgetter('id'), current_val)):
+					setattr(current_source, param_name, new_val)
+					print(set(map(operator.attrgetter('id'), new_val)), set(map(operator.attrgetter('id'), current_val)))
+					modified = True
+			elif type(new_val) == datetime.datetime:
+				if current_val.replace(tzinfo=None) != new_val.replace(tzinfo=None):
+					setattr(current_source, param_name, new_val)
+					modified = True
+			elif current_val != new_val:
+				setattr(current_source, param_name, new_val)
 				modified = True
 
 		if modified:
@@ -162,8 +173,8 @@ def read_db(csv_link):
 				sources.append(source)
 			statuses.update([status])
 
-		source_ids = list(map(lambda x: x.id, sources))
-		db_sources = list(map(lambda x: x.id, db_session.query(FundingSource).all()))
+		source_ids = list(map(operator.attrgetter('id'), sources))
+		db_sources = list(map(operator.attrgetter('id'), db_session.query(FundingSource).all()))
 		for source_id in set(db_sources) - set(source_ids):
 			q = db_session.query(FundingSource).filter_by(id=source_id)
 			if q.count():
