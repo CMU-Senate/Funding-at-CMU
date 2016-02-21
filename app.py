@@ -125,9 +125,9 @@ def contact():
         category = request.form.get('category')
         comments = request.form.get('comments')
 
-        message = MIMEText('''From: %s<%s>
-Category: %s
-Body:
+        message = MIMEText('''<b>From</b>: %s<%s>
+<b>Category</b>: %s
+<b>Body</b>:
 > %s
 ''' % (name, email, category, comments))
 
@@ -135,9 +135,10 @@ Body:
         message['From'] = app.config['SMTP_EMAIL']
         message['To'] = app.config['CONTACT_EMAIL']
         message.add_header('reply-to', email)
+        message.add_header('Content-Type','text/html')
 
         s = smtplib.SMTP('localhost')
-        s.sendmail(app.config['SMTP_EMAIL'], [app.config['CONTACT_EMAIL']], msg.as_string())
+        s.sendmail(app.config['SMTP_EMAIL'], [app.config['CONTACT_EMAIL']], message.as_string())
         s.quit()
 
         flash('Thank you for your feedback!')
