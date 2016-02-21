@@ -14,6 +14,7 @@ from sqlalchemy import MetaData, desc
 from sqlalchemy_utils import escape_like
 from sqlalchemy.ext.serializer import loads, dumps
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from models import *
 from db_init import main
 
@@ -125,17 +126,25 @@ def contact():
         category = request.form.get('category')
         comments = request.form.get('comments')
 
-        message = MIMEText('''<b>From</b>: %s<%s>
+        message = MIMEMultipart('alternative')
+        text = MIMEText('''From: %s<%s>
+Category: %s
+Body:
+> %s
+''' % (name, email, category, comments),  'plain')
+        html = MIMEText('''<b>From</b>: %s<%s>
 <b>Category</b>: %s
 <b>Body</b>:
 > %s
-''' % (name, email, category, comments))
+''' % (name, email, category, comments),  'html')
 
         message['Subject'] = 'funding.cmu.edu Feedback: %s' % category
         message['From'] = app.config['SMTP_EMAIL']
         message['To'] = app.config['CONTACT_EMAIL']
         message.add_header('reply-to', email)
-        message.add_header('Content-Type','text/html')
+
+        message.attach(text)
+        message.attach(html)
 
         s = smtplib.SMTP('localhost')
         s.sendmail(app.config['SMTP_EMAIL'], [app.config['CONTACT_EMAIL']], message.as_string())
