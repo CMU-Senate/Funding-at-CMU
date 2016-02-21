@@ -4,6 +4,7 @@ import math
 import io
 import operator
 import datetime
+import smtplib
 from config import app, version, login_manager, db_session, engine
 from util import read_db
 from flask import render_template, request, redirect, session, abort, flash, g, send_file
@@ -12,6 +13,7 @@ from flask.ext.login import login_required, logout_user
 from sqlalchemy import MetaData, desc
 from sqlalchemy_utils import escape_like
 from sqlalchemy.ext.serializer import loads, dumps
+from email.mime.text import MIMEText
 from models import *
 from db_init import main
 
@@ -110,6 +112,35 @@ def profile():
         db_session.commit()
 
         flash('Profile saved.')
+        return redirect('/')
+
+@app.route('/contact', methods=['GET', 'POST'])
+@login_required
+def contact():
+    if request.method == 'GET':
+        return render_template('contact.html')
+    else:
+        name = request.form.get('name')
+        email = request.form.get('email')
+        category = request.form.get('category')
+        comments = request.form.get('comments')
+
+        message = MIMEText('''From: %s<%s>
+Category: %s
+Body:
+> %s
+''' % (name, email, category, comments))
+
+        message['Subject'] = 'funding.cmu.edu Feedback: %s' % category
+        message['From'] = app.config['SMTP_EMAIL']
+        message['To'] = app.config['CONTACT_EMAIL']
+        message.add_header('reply-to', email)
+
+        s = smtplib.SMTP('localhost')
+        s.sendmail(app.config['SMTP_EMAIL'], [app.config['CONTACT_EMAIL']], msg.as_string())
+        s.quit()
+
+        flash('Thank you for your feedback!')
         return redirect('/')
 
 @app.route('/browse')
