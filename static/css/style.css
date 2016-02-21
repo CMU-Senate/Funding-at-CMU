@@ -10,21 +10,42 @@ main {
 
 /* label color */
 
- /* label focus color */
- .input-field input[type=text]:focus + label {
-   color: #d50000;
- }
+/* label focus color */
+.input-field input[type=text]:focus + label {
+  color: #d50000;
+}
+.input-field input[type=email]:focus + label {
+  color: #d50000;
+}
+.input-field input[type=url]:focus + label {
+  color: #d50000;
+}
+.input-field textarea:focus + label {
+  color: #d50000 !important;
+}
 
- /* label underline focus color */
- .input-field input[type=text]:focus {
-   border-bottom: 1px solid #d50000;
-   box-shadow: 0 1px 0 0 #d50000;
- }
+/* label underline focus color */
+.input-field input[type=text]:focus {
+  border-bottom: 1px solid #d50000;
+  box-shadow: 0 1px 0 0 #d50000;
+}
+.input-field input[type=email]:focus {
+  border-bottom: 1px solid #d50000;
+  box-shadow: 0 1px 0 0 #d50000;
+}
+.input-field input[type=url]:focus {
+  border-bottom: 1px solid #d50000;
+  box-shadow: 0 1px 0 0 #d50000;
+}
+.input-field textarea:focus {
+  border-bottom: 1px solid #d50000 !important;
+  box-shadow: 0 1px 0 0 #d50000 !important;
+}
 
- /* icon prefix focus color */
- .input-field .prefix.active {
-   color: #000;
- }
+/* icon prefix focus color */
+.input-field .prefix.active {
+  color: #000;
+}
 
 .clearFilter {
   padding: 0 .5rem;

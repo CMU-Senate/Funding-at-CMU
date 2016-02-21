@@ -49,3 +49,6 @@ login_manager = login.LoginManager()
 login_manager.login_view = 'index'
 login_manager.login_message = 'Please login to access that page.'
 login_manager.init_app(app)
+
+app.config['SMTP_EMAIL'] = 'sushain97@gmail.com'
+app.config['CONTACT_EMAIL'] = 'sushain97@gmail.com'

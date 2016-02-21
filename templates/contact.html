@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}funding.cmu.edu | Contact Us{% endblock %}
+
+{% block main %}
+<div class="section">
+  <div class="container">
+    <h1 class="amber-text text-darken-3">Contact Us</h1>
+    <h5 class="light" style="line-height: 2.5rem">
+      We appreciate your help with suggestions for new funding sources, corrections on existing ones, reports of site issues, feature suggestions and more.
+      Issues filed on <a class="amber-text text-darken-3" href="https://github.com/sushain97/funding.cmu.edu" target="_blank">GitHub</a> will also be addressed.
+    </h5>
+
+    <br>
+
+    <form class="row" method="post">
+      <div class="col s12" style="margin-bottom: 1rem;">
+        <div class="input-field col m4 s12">
+          <input type="text" name="name" required>
+          <label for="name">Your Name</label>
+        </div>
+      </div>
+
+      <div class="col s12" style="margin-bottom: 1rem;">
+        <div class="input-field col m4 s12">
+          <input type="email" name="email" required>
+          <label for="email">Your Email</label>
+        </div>
+      </div>
+
+      <div class="col s12" style="margin-bottom: 1rem;">
+        <div class="input-field col m4 s12">
+          <select required class="validate" name="category">
+            <option value="" disabled selected>Select an option</option>
+            <option>New funding source</option>
+            <option>Correction in existing funding source</option>
+            <option>General site bug</option>
+            <option>Feature request</option>
+            <option>Other</option>
+          </select>
+          <label for="category">Category</label>
+        </div>
+      </div>
+
+      <div class="col s12" style="margin-bottom: 1rem;">
+        <div class="input-field col m4 s12">
+          <textarea class="materialize-textarea" name="comments" required></textarea>
+          <label for="comments">Your Comments</label>
+        </div>
+      </div>
+
+      <div class="col s12">
+        <button type="submit" class="btn waves-effect waves-light red darken-4">Submit Feedback
+          <i class="material-icons right">send</i>
+        </button>
+      </div>
+    </form>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/profile.js') }}"></script>
+{% endblock %}
