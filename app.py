@@ -78,6 +78,8 @@ def profile():
 
         g.user.citizen = bool(citizen)
 
+        g.user.profile_set = True
+
         db_session.commit()
 
         flash('Profile saved.')
