@@ -3,6 +3,7 @@
 import math
 import io
 import operator
+import datetime
 from config import app, version, login_manager, db_session, engine
 from util import read_db
 from flask import render_template, request, redirect, session, abort, flash, g, send_file
@@ -47,6 +48,11 @@ def commit_on_success(error=None):
 
 @app.route('/')
 def index():
+    if request.args.get('logged_in', False):
+        session['last_login'] = g.user.last_login
+        g.user.last_login = datetime.datetime.now()
+        db_session.commit()
+
     if request.args.get('logged_in', False) and g.user and g.user.is_authenticated and not g.user.profile_set:
         return redirect('/profile')
     elif g.user and g.user.is_authenticated:
@@ -190,7 +196,8 @@ def browse(page=0):
             ['title_desc', 'Title (Z-A)'],
             ['deadline_nearest', 'Deadline (soonest first)'],
             ['deadline_farthest', 'Deadline (farthest first)'],
-        ]
+        ],
+        'last_login': session['last_login']
     }
     return render_template('browse.html', **context)
 

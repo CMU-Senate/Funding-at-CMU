@@ -2,6 +2,7 @@
 
 from config import db
 from flask.ext.login import UserMixin
+from sqlalchemy.sql import func
 
 categories = db.Table('categories',
     db.Column('funding_category_id', db.Integer, db.ForeignKey('funding_category.id')),
@@ -43,6 +44,7 @@ class User(db.Model, UserMixin):
     school_id = db.Column(db.String(3), db.ForeignKey('funding_school.id'))
     citizen = db.Column(db.Boolean)
     year_id = db.Column(db.Integer, db.ForeignKey('funding_year.id'))
+    last_login = db.Column(db.DateTime, default=func.now())
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id', kwargs.get('email').split('@')[0])

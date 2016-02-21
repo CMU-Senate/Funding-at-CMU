@@ -40,3 +40,14 @@ div.clearFilterContainer {
   float: right !important;
   margin-right: 0;
 }
+
+sup {
+  top: -.35em;
+}
+
+sup i.material-icons {
+  float: none;
+  display: inline;
+  font-size: 1.25rem;
+  line-height: inherit;
+}

@@ -127,6 +127,11 @@
                 {% if source.independent %} person {% else %} people {% endif %}
               </i>
               {{source.name}}
+              {% if source.added_date and last_login < source.added_date %}
+                <sup title="Added since you last logged in"><i class="material-icons red-text text-darken-4">new_releases</i></sup>
+              {% elif source.updated_date and last_login < source.updated_date %}
+                <sup title="Updated since you last logged in"><i class="material-icons red-text text-darken-4">new_releases</i></sup>
+              {% endif %}
 
               <div class="right">
                 {% for category in source.categories|sort(attribute='name') %}
