@@ -19,6 +19,8 @@ db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind
 
 version = subprocess.check_output(['git', 'describe', '--tags']).decode(sys.stdout.encoding).strip()
 
+app.config['GOOGLE_ANALYTICS_TRACKING_ID'] = ''
+
 from social.apps.flask_app.routes import social_auth
 from social.apps.flask_app.default.models import init_social
 

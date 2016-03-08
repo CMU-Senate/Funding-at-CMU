@@ -34,6 +34,13 @@ def inject_version():
     return dict(version=version)
 
 @app.context_processor
+def inject_anlytics_tracking_id():
+    if 'GOOGLE_ANALYTICS_TRACKING_ID' in app.config:
+        return dict(google_analytics_tracking_id=app.config['GOOGLE_ANALYTICS_TRACKING_ID'])
+    else:
+        return {}
+
+@app.context_processor
 def inject_user():
     try:
         return {'user': g.user if g.user.is_authenticated else None}
