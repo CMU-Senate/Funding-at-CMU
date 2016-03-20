@@ -15,6 +15,7 @@ from sqlalchemy_utils import escape_like
 from sqlalchemy.ext.serializer import loads, dumps
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from htmlmin.minify import html_minify
 from models import *
 from db_init import main
 
@@ -76,6 +77,14 @@ def hashed_url_for_static_file(endpoint, values):
             while param_name in values:
                 param_name = '_' + param_name
             values[param_name] = version.lstrip('v')
+
+@app.after_request
+def minify_html(response):
+    if response.content_type == u'text/html; charset=utf-8':
+        response.set_data(
+            html_minify(response.get_data(as_text=True))
+        )
+    return response
 
 @app.route('/')
 def index():
