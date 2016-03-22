@@ -154,7 +154,7 @@ Body:
 > %s
 ''' % (name, email, category, comments),  'html')
 
-        message['Subject'] = 'funding.cmu.edu Feedback: %s' % category
+        message['Subject'] = 'Funding at CMU Feedback: %s' % category
         message['From'] = app.config['SMTP_EMAIL']
         message['To'] = app.config['CONTACT_EMAIL']
         message.add_header('reply-to', email)
