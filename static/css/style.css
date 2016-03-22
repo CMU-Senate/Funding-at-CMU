@@ -72,3 +72,13 @@ sup i.material-icons {
   font-size: 1.25rem;
   line-height: inherit;
 }
+
+[type="radio"]:checked+label:after {
+    border: 2px solid #B71C1C !important;
+    background-color: #B71C1C !important;
+}
+
+[type="checkbox"]:checked+label:before {
+    border-right: 2px solid #B71C1C !important;
+    border-bottom: 2px solid #B71C1C !important;
+}
