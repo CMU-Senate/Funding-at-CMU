@@ -19,7 +19,7 @@
     <div class="row" id="filters">
       <div class="col m3">
         <div class="card-panel large" style="margin-top: .25rem;">
-          <form>
+          <form action="/browse">
             <div class="row">
               <div class="input-field col m12">
                 <select name="sort_order">
@@ -33,9 +33,9 @@
 
             <div class="row" style="padding-bottom: .5rem; padding-right: 1.5rem; padding-left: 1.5rem;"><hr></div>
 
-            <input type="hidden" name="page_size" value="{{page_size}}">
-            <input type="hidden" name="years_cleared" {% if years_cleared %} value="1" {% endif %}>
-            <input type="hidden" name="schools_cleared" {% if schools_cleared %} value="1" {% endif %}>
+            <input type="hidden" class="payload-input" name="page_size" value="{{page_size}}">
+            <input type="hidden" class="payload-input" name="years_cleared" {% if years_cleared %} value="1" {% endif %}>
+            <input type="hidden" class="payload-input" name="schools_cleared" {% if schools_cleared %} value="1" {% endif %}>
             {% if q %}<input type="hidden" name="q" value="{{q}}">{% endif %}
 
             <div class="row">

@@ -246,7 +246,9 @@ def browse(page=0):
         'schools': ','.join(schools),
         'sex': sex,
         'citizen': citizen,
-        'sort_order': sort_order
+        'sort_order': sort_order,
+        'schools_cleared': request.args.get('schools_cleared', False),
+        'years_cleared': request.args.get('years_cleared', False)
     }
     params = '&'.join(map(lambda x: '%s=%s' % x, filter(lambda x: x[1], params.items())))
 

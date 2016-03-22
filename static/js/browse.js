@@ -8,14 +8,14 @@ $(document).ready(function () {
 
     $('#pageSizeSelector').change(function () {
       var params = $(this).data('params');
-      var inputs = $('input').serialize();
+      var inputs = $('input:not(.payload-input)').serialize();
       window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + inputs + '&' + params;
     });
 
     $('#searchText').keyup(function (event) {
       if(event.keyCode == 13) {
         var params = $(this).data('params');
-        var inputs = $('input').serialize();
+        var inputs = $('input:not(.payload-input)').serialize();
         window.location.href = '/browse' + '?page_size=' + $('#pageSizeSelector').val() + '&' + inputs + '&' + params;
       }
     });
