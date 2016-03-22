@@ -56,6 +56,13 @@ div.row#filters div.row {
   margin-bottom: 0;
 }
 
+div.row#filters .caret {
+  background: white;
+  z-index: 10;
+  padding-left: 5px;
+  pointer-events: none;
+}
+
 div.clearFilterContainer {
   padding: 1.25rem .25rem 0 0 !important;
   float: right !important;
